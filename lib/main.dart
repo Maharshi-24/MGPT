@@ -4,7 +4,7 @@ import 'package:http/http.dart' as http;
 import 'dart:convert';
 
 void main() {
-  runApp(MyApp());
+  runApp(const MyApp());
 }
 
 class MyApp extends StatelessWidget {
@@ -28,23 +28,24 @@ class MyApp extends StatelessWidget {
 class ChatScreen extends StatelessWidget {
   final ScrollController _scrollController = ScrollController();
 
+  ChatScreen({super.key});
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Maharshi Chat'),
+        title: const Text('Maharshi Chat'),
       ),
       body: Column(
         children: [
           Expanded(
             child: Consumer<ChatProvider>(
               builder: (context, chatProvider, child) {
-                // Scroll to the bottom when new messages are added
                 WidgetsBinding.instance.addPostFrameCallback((_) {
                   if (_scrollController.hasClients) {
                     _scrollController.animateTo(
                       _scrollController.position.maxScrollExtent,
-                      duration: Duration(milliseconds: 300),
+                      duration: const Duration(milliseconds: 300),
                       curve: Curves.easeOut,
                     );
                   }
@@ -57,13 +58,12 @@ class ChatScreen extends StatelessWidget {
                     if (index < chatProvider.messages.length) {
                       final message = chatProvider.messages[index];
                       return ListTile(
-                        title: Text(message['text']),
+                        title: _formatMessage(message['text']),
                         subtitle: Text(message['isUser'] ? 'You' : 'Bot'),
                         tileColor: message['isUser'] ? Colors.blue[50] : Colors.grey[200],
                       );
                     } else {
-                      // Show a loading indicator when the bot is thinking
-                      return ListTile(
+                      return const ListTile(
                         title: Center(child: CircularProgressIndicator()),
                       );
                     }
@@ -79,14 +79,14 @@ class ChatScreen extends StatelessWidget {
                 Expanded(
                   child: TextField(
                     controller: context.read<ChatProvider>().textController,
-                    decoration: InputDecoration(
+                    decoration: const InputDecoration(
                       hintText: 'Type a message...',
                       border: OutlineInputBorder(),
                     ),
                   ),
                 ),
                 IconButton(
-                  icon: Icon(Icons.send),
+                  icon: const Icon(Icons.send),
                   onPressed: () {
                     context.read<ChatProvider>().sendMessage();
                   },
@@ -95,6 +95,108 @@ class ChatScreen extends StatelessWidget {
             ),
           ),
         ],
+      ),
+    );
+  }
+
+  Widget _formatMessage(String text) {
+    final lines = text.split('\n');
+    final widgets = <Widget>[];
+
+    for (var line in lines) {
+      if (line.trim().isEmpty) {
+        continue;
+      } else if (line.startsWith('# ')) {
+        // Heading 1
+        widgets.add(Text(
+          line.substring(2),
+          style: const TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
+        ));
+      } else if (line.startsWith('## ')) {
+        // Heading 2
+        widgets.add(Text(
+          line.substring(3),
+          style: const TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+        ));
+      } else if (line.startsWith('* ') || line.startsWith('- ')) {
+        // Bullet points
+        widgets.add(Row(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            const Text('• '),
+            Expanded(
+              child: _parseInlineFormatting(line.substring(2)),
+            ),
+          ],
+        ));
+      } else if (line.trim() == '========' || line.trim() == '--------------') {
+        // Horizontal line separator
+        widgets.add(const Divider(
+          thickness: 1,
+          color: Colors.grey,
+        ));
+      } else if (line.trim() == '**') {
+        // Ignore standalone **
+        continue;
+      } else {
+        // Parse inline formatting for regular text
+        widgets.add(_parseInlineFormatting(line));
+      }
+    }
+
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: widgets,
+    );
+  }
+
+  Widget _parseInlineFormatting(String text) {
+    final regex = RegExp(r'\*\*(.*?)\*\*|__(.*?)__|\*(.*?)\*|_(.*?)_');
+    final matches = regex.allMatches(text);
+    final spans = <TextSpan>[];
+
+    int currentIndex = 0;
+
+    for (var match in matches) {
+      // Add text before the match
+      if (match.start > currentIndex) {
+        spans.add(TextSpan(
+          text: text.substring(currentIndex, match.start),
+          style: const TextStyle(fontSize: 16),
+        ));
+      }
+
+      // Add the matched text with appropriate style
+      final boldText = match.group(1) ?? match.group(2);
+      final italicText = match.group(3) ?? match.group(4);
+
+      if (boldText != null) {
+        spans.add(TextSpan(
+          text: boldText,
+          style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+        ));
+      } else if (italicText != null) {
+        spans.add(TextSpan(
+          text: italicText,
+          style: const TextStyle(fontSize: 16, fontStyle: FontStyle.italic),
+        ));
+      }
+
+      currentIndex = match.end;
+    }
+
+    // Add remaining text after the last match
+    if (currentIndex < text.length) {
+      spans.add(TextSpan(
+        text: text.substring(currentIndex),
+        style: const TextStyle(fontSize: 16),
+      ));
+    }
+
+    return RichText(
+      text: TextSpan(
+        style: const TextStyle(fontSize: 16, color: Colors.black),
+        children: spans,
       ),
     );
   }
@@ -109,18 +211,15 @@ class ChatProvider with ChangeNotifier {
     final userMessage = textController.text.trim();
     if (userMessage.isEmpty) return;
 
-    // Add user message to the list
     messages.add({'text': userMessage, 'isUser': true});
     isThinking = true;
     notifyListeners();
 
-    // Clear the input field
     textController.clear();
 
-    // Send the message to the backend
     try {
       final response = await http.post(
-        Uri.parse('http://192.168.168.46:5000/api/chat'), // Replace with your backend URL
+        Uri.parse('http://192.168.168.46:5000/api/chat'),
         headers: {'Content-Type': 'application/json'},
         body: jsonEncode({'message': userMessage}),
       );
