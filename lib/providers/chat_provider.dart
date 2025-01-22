@@ -4,10 +4,10 @@ import 'dart:convert';
 
 class ChatProvider with ChangeNotifier {
   final TextEditingController textController = TextEditingController();
-  final FocusNode focusNode = FocusNode(); // Add a FocusNode
+  final FocusNode focusNode = FocusNode();
   List<Map<String, dynamic>> messages = [];
   bool isThinking = false;
-  final String userId = 'uniqueUserId'; // Use a unique identifier for each user
+  final String userId = 'uniqueUserId';
 
   Future<void> sendMessage() async {
     final userMessage = textController.text.trim();
@@ -21,8 +21,7 @@ class ChatProvider with ChangeNotifier {
 
     try {
       final response = await http.post(
-        // Uri.parse('http://192.168.168.46:5000/api/chat'), // mobile hotspot
-        // Uri.parse('http://172.20.176.1:5000/api/chat'), // home wifi
+        Uri.parse('http://172.20.176.1:5000/api/chat'),
         headers: {'Content-Type': 'application/json'},
         body: jsonEncode({'message': userMessage, 'userId': userId}),
       );
@@ -41,7 +40,6 @@ class ChatProvider with ChangeNotifier {
     }
   }
 
-  // Dispose the FocusNode when not needed
   @override
   void dispose() {
     focusNode.dispose();

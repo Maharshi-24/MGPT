@@ -12,17 +12,13 @@ class MessageParser {
         continue;
       }
 
-      // Handle horizontal rules and custom separators
       if (line.trim().startsWith(RegExp(r'[-=*]{3,}'))) {
-        final lineLength = screenWidth * 0.8; // 80% of screen width
+        final lineLength = screenWidth * 0.8;
         spans.add(TextSpan(
-          text: '${'─' * (lineLength ~/ 10.3)}\n', // Adjust length dynamically
+          text: '${'─' * (lineLength ~/ 10.3)}\n',
           style: const TextStyle(color: Colors.grey),
         ));
-      }
-
-      // Handle headings
-      else if (line.startsWith('### ')) {
+      } else if (line.startsWith('### ')) {
         spans.add(TextSpan(
           text: '${line.substring(4)}\n',
           style: const TextStyle(fontSize: 20, fontWeight: FontWeight.bold, color: Colors.white),
@@ -37,20 +33,14 @@ class MessageParser {
           text: '${line.substring(2)}\n',
           style: const TextStyle(fontSize: 28, fontWeight: FontWeight.bold, color: Colors.white),
         ));
-      }
-
-      // Handle blockquotes
-      else if (line.startsWith('> ')) {
+      } else if (line.startsWith('> ')) {
         spans.add(TextSpan(
           text: line.substring(2) + '\n',
           style: const TextStyle(fontStyle: FontStyle.italic, color: Colors.grey),
         ));
-      }
-
-      // Handle lists
-      else if (line.startsWith('- ') || line.startsWith('* ') || line.startsWith('+ ')) {
+      } else if (line.startsWith('- ') || line.startsWith('* ') || line.startsWith('+ ')) {
         spans.add(TextSpan(
-          text: '• ${line.substring(2)}\n', // Use a bullet point
+          text: '• ${line.substring(2)}\n',
           style: const TextStyle(fontSize: 16, color: Colors.white),
         ));
       } else if (line.startsWith(RegExp(r'\d+\. '))) {
@@ -58,10 +48,7 @@ class MessageParser {
           text: '$line\n',
           style: const TextStyle(fontSize: 16, color: Colors.white),
         ));
-      }
-
-      // Handle inline formatting (bold, italic, strikethrough, underline, code)
-      else {
+      } else {
         final regex = RegExp(r'\*\*(.*?)\*\*|__(.*?)__|\*(.*?)\*|_(.*?)_|~~(.*?)~~|\+\+(.*?)\+\+|`(.*?)`');
         final matches = regex.allMatches(line);
         int currentIndex = 0;

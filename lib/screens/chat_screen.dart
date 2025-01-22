@@ -1,7 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import '../widgets/chat_message_list.dart';
-import '../widgets/chat_input.dart';
+import '../widgets/chat/chat_message_list.dart';
+import '../widgets/chat/chat_input.dart';
+import '../widgets/chat/chat_input.dart';
+import '../widgets/chat/chat_message_list.dart';
+import '../widgets/drawer/custom_drawer.dart';
 import '../providers/chat_provider.dart';
 
 class ChatScreen extends StatefulWidget {
@@ -12,8 +15,8 @@ class ChatScreen extends StatefulWidget {
 }
 
 class _ChatScreenState extends State<ChatScreen> {
-  bool _isDrawerOpen = false; // Track whether the drawer is open
-  double _drawerOffset = 0.0; // Track the swipe offset
+  bool _isDrawerOpen = false;
+  double _drawerOffset = 0.0;
 
   void _toggleDrawer() {
     setState(() {
@@ -23,15 +26,13 @@ class _ChatScreenState extends State<ChatScreen> {
   }
 
   void _onHorizontalDragUpdate(DragUpdateDetails details) {
-    // Calculate the swipe offset
     setState(() {
       _drawerOffset = (details.primaryDelta! / MediaQuery.of(context).size.width) + _drawerOffset;
-      _drawerOffset = _drawerOffset.clamp(0.0, 1.0); // Clamp the value between 0 and 1
+      _drawerOffset = _drawerOffset.clamp(0.0, 1.0);
     });
   }
 
   void _onHorizontalDragEnd(DragEndDetails details) {
-    // Determine if the drawer should be opened or closed based on the swipe velocity
     if (_drawerOffset > 0.5) {
       setState(() {
         _isDrawerOpen = true;
@@ -51,49 +52,44 @@ class _ChatScreenState extends State<ChatScreen> {
 
     return GestureDetector(
       onTap: () {
-        // Unfocus the text field when tapping outside
         chatProvider.focusNode.unfocus();
       },
       onHorizontalDragUpdate: _onHorizontalDragUpdate,
       onHorizontalDragEnd: _onHorizontalDragEnd,
       child: Scaffold(
-        backgroundColor: Colors.black87, // Dark background
+        backgroundColor: Colors.black87,
         body: Stack(
           children: [
-            // Main content (including AppBar)
             AnimatedContainer(
-              duration: const Duration(milliseconds: 300), // Animation duration
-              curve: Curves.easeInOut, // Smooth animation
+              duration: const Duration(milliseconds: 300),
+              curve: Curves.easeInOut,
               transform: Matrix4.translationValues(
                 MediaQuery.of(context).size.width * 0.7 * _drawerOffset,
                 0,
                 0,
-              ), // Push content to the right
+              ),
               child: Column(
                 children: [
-                  // Custom AppBar
                   AppBar(
                     title: const Align(
-                      alignment: Alignment.centerLeft, // Align text to the left
+                      alignment: Alignment.centerLeft,
                       child: Text(
                         'MGPT',
                         style: TextStyle(color: Colors.white),
                       ),
                     ),
-                    backgroundColor: Colors.black87, // Slightly lighter dark color for app bar
+                    backgroundColor: Colors.black87,
                     elevation: 0,
                     leading: IconButton(
                       icon: Image.asset(
-                        'assets/images/drawer_icon.png', // Path to your custom drawer icon
-                        width: 24, // Adjust the size as needed
+                        'assets/images/drawer_icon.png',
+                        width: 24,
                         height: 24,
-                        color: Colors.white, // Tint the icon white
+                        color: Colors.white,
                       ),
-                      onPressed: _toggleDrawer, // Toggle drawer state
+                      onPressed: _toggleDrawer,
                     ),
                   ),
-
-                  // Main content
                   Expanded(
                     child: const ChatMessageList(),
                   ),
@@ -101,127 +97,22 @@ class _ChatScreenState extends State<ChatScreen> {
                 ],
               ),
             ),
-
-            // Backdrop (Scrim) effect
             if (_isDrawerOpen || _drawerOffset > 0)
               GestureDetector(
-                onTap: _toggleDrawer, // Close the drawer when tapping the backdrop
+                onTap: _toggleDrawer,
                 child: Container(
-                  color: Colors.black.withOpacity(0.5 * _drawerOffset), // Semi-transparent backdrop
+                  color: Colors.black.withOpacity(0.5 * _drawerOffset),
                 ),
               ),
-
-            // Drawer
             AnimatedContainer(
-              duration: const Duration(milliseconds: 300), // Animation duration
-              curve: Curves.easeInOut, // Smooth animation
+              duration: const Duration(milliseconds: 300),
+              curve: Curves.easeInOut,
               transform: Matrix4.translationValues(
                 -MediaQuery.of(context).size.width * 0.7 * (1 - _drawerOffset),
                 0,
                 0,
-              ), // Slide drawer in/out
-              child: _buildDrawer(context), // Custom drawer
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-
-  // Function to build the drawer
-  Widget _buildDrawer(BuildContext context) {
-    return ClipRRect(
-      borderRadius: const BorderRadius.only(
-        topRight: Radius.circular(20), // Pointy corners at the top
-        bottomRight: Radius.circular(20),
-      ),
-      child: Container(
-        width: MediaQuery.of(context).size.width * 0.7, // Drawer width (70% of screen)
-        color: const Color(0xFF0C0C0C), // Solid dark background for the drawer
-        child: Column(
-          children: [
-            // Drawer header with the same height as the AppBar
-            Container(
-              height: kToolbarHeight, // Same height as the AppBar
-              color: const Color(0xFF0C0C0C), // Solid dark color for the header
-              padding: const EdgeInsets.symmetric(horizontal: 16),
-            ),
-
-            // Search bar
-            Padding(
-              padding: const EdgeInsets.all(16.0),
-              child: TextField(
-                decoration: InputDecoration(
-                  hintText: 'Search',
-                  hintStyle: const TextStyle(color: Colors.white),
-                  filled: true,
-                  fillColor: const Color(0xFF292929), // Solid dark grey for search bar
-                  border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(36),
-                    borderSide: BorderSide.none,
-                  ),
-                  prefixIcon: const Icon(Icons.search, color: Colors.white),
-                  contentPadding: const EdgeInsets.symmetric(vertical: 0),
-                ),
-                style: const TextStyle(color: Colors.white),
               ),
-            ),
-
-            // Space for previously created chats (empty for now)
-            Expanded(
-              child: ListView(
-                padding: EdgeInsets.zero,
-                children: [
-                  // Placeholder for chat history (will be populated later)
-                  // Example:
-                  // ListTile(
-                  //   leading: Icon(Icons.chat, color: Colors.white),
-                  //   title: Text('Chat 1', style: TextStyle(color: Colors.white)),
-                  //   onTap: () {
-                  //     // Navigate to the selected chat
-                  //   },
-                  // ),
-                ],
-              ),
-            ),
-
-            // User profile section at the bottom
-            Container(
-              padding: const EdgeInsets.all(16),
-              decoration: const BoxDecoration(
-                color: Color(0xFF0C0C0C),
-              ),
-              child: Row(
-                children: [
-                  const CircleAvatar(
-                    radius: 20,
-                    backgroundColor: Color(0xFF0C0C0C), // Solid dark grey for user avatar
-                    child: Icon(Icons.person, color: Colors.white),
-                  ),
-                  const SizedBox(width: 10),
-                  Expanded(
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        const Text(
-                          'User Name', // Placeholder for user name
-                          style: TextStyle(
-                            color: Colors.white,
-                            fontWeight: FontWeight.bold,
-                          ),
-                        ),
-                        Text(
-                          'user@example.com', // Placeholder for user email
-                          style: TextStyle(
-                            color: Colors.white,
-                            fontSize: 12,
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                ],
-              ),
+              child: const CustomDrawer(),
             ),
           ],
         ),

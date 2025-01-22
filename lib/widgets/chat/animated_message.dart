@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import '../utils/message_parser.dart';
+import '../../../utils/message_parser.dart';
 
 class AnimatedMessage extends StatelessWidget {
   final String message;
@@ -32,14 +32,14 @@ class AnimatedMessage extends StatelessWidget {
           alignment: isUser ? Alignment.centerRight : Alignment.centerLeft,
           child: isUser
               ? Container(
-              padding: const EdgeInsets.fromLTRB(12, 16, 12, 0), // Adjust padding here
-              decoration: BoxDecoration(
-              color: Colors.grey[900], // User bubble color
-              borderRadius: BorderRadius.circular(16), // Rounded corners
+            padding: const EdgeInsets.fromLTRB(12, 16, 12, 0),
+            decoration: BoxDecoration(
+              color: Colors.grey[900],
+              borderRadius: BorderRadius.circular(16),
             ),
             child: MessageParser.parse(message, context),
           )
-              : MessageParser.parse(message, context), // AI output: no bubble
+              : MessageParser.parse(message, context),
         ),
       ),
     );

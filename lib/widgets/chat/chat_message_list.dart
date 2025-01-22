@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import '../providers/chat_provider.dart';
+import '../../../providers/chat_provider.dart';
+import '../common/scroll_to_bottom_button.dart';
 import 'animated_message.dart';
 import 'thinking_indicator.dart';
+import '../../common/scroll_to_bottom_button.dart';
 
 class ChatMessageList extends StatefulWidget {
   const ChatMessageList({super.key});
@@ -57,7 +59,6 @@ class _ChatMessageListState extends State<ChatMessageList> {
   Widget build(BuildContext context) {
     return Consumer<ChatProvider>(
       builder: (context, chatProvider, child) {
-        // Scroll to bottom only when a new message is added
         if (chatProvider.messages.length > _previousMessageCount) {
           WidgetsBinding.instance.addPostFrameCallback((_) {
             if (_scrollController.hasClients) {
@@ -104,7 +105,6 @@ class _ChatMessageListState extends State<ChatMessageList> {
                   }
                 },
               ),
-            // Scroll-to-bottom button with fade animation
             Positioned(
               bottom: 16,
               left: 0,
@@ -113,26 +113,8 @@ class _ChatMessageListState extends State<ChatMessageList> {
                 child: AnimatedOpacity(
                   opacity: _showScrollToBottomButton ? 1.0 : 0.0,
                   duration: const Duration(milliseconds: 300),
-                  child: GestureDetector(
-                    onTap: _scrollToBottom,
-                    child: Container(
-                      width: 50, // Fixed size for the button
-                      height: 50,
-                      decoration: BoxDecoration(
-                        color: Colors.grey[850], // Button color
-                        shape: BoxShape.circle, // Make it circular
-                        boxShadow: [
-                          BoxShadow(
-                            color: Colors.black.withOpacity(0.2),
-                            blurRadius: 6,
-                            offset: const Offset(0, 2),
-                          ),
-                        ],
-                      ),
-                      child: Center(
-                        child: _buildImageIcon(),
-                      ),
-                    ),
+                  child: ScrollToBottomButton(
+                    onPressed: _scrollToBottom,
                   ),
                 ),
               ),
@@ -141,19 +123,5 @@ class _ChatMessageListState extends State<ChatMessageList> {
         );
       },
     );
-  }
-
-  Widget _buildImageIcon() {
-    try {
-      return Image.asset(
-        'assets/images/scroll-to-bottom.png', // Ensure this path is correct
-        width: 20,
-        height: 20,
-        color: Colors.white,
-      );
-    } catch (e) {
-      print('Error loading image: $e');
-      return Icon(Icons.error); // Fallback icon if the image fails to load
-    }
   }
 }
