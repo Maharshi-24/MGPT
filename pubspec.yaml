@@ -24,6 +24,4 @@ flutter:
   uses-material-design: true
 
   assets:
-  # Add any assets (e.g., images, fonts) here
-  # - assets/images/
-  # - assets/fonts/
+    - assets/my_image_icon.png
