@@ -4,7 +4,6 @@ import '../../../providers/chat_provider.dart';
 import '../common/scroll_to_bottom_button.dart';
 import 'animated_message.dart';
 import 'thinking_indicator.dart';
-import '../../common/scroll_to_bottom_button.dart';
 
 class ChatMessageList extends StatefulWidget {
   const ChatMessageList({super.key});
