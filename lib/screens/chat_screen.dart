@@ -9,7 +9,8 @@ class ChatScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Maharshi Chat'),
+        title: const Text('MChat'),
+        backgroundColor: Colors.blue, // Adjust the color to match the design
       ),
       body: Column(
         children: [

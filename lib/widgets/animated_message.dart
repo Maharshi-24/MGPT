@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import '../utils/message_parser.dart';
+import '../utils/message_parser.dart'; // Ensure this import is present
 
 class AnimatedMessage extends StatelessWidget {
   final String message;
@@ -15,6 +15,16 @@ class AnimatedMessage extends StatelessWidget {
   Widget build(BuildContext context) {
     return AnimatedSwitcher(
       duration: const Duration(milliseconds: 300),
+      transitionBuilder: (Widget child, Animation<double> animation) {
+        return FadeTransition(
+          opacity: animation,
+          child: SizeTransition(
+            sizeFactor: animation,
+            axisAlignment: isUser ? 1.0 : -1.0,
+            child: child,
+          ),
+        );
+      },
       child: Padding(
         key: ValueKey(message),
         padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
@@ -23,12 +33,16 @@ class AnimatedMessage extends StatelessWidget {
           child: Container(
             padding: const EdgeInsets.all(12),
             decoration: BoxDecoration(
-              color: isUser ? Colors.blue[50] : Colors.grey[200],
+              color: isUser ? Colors.blue[100] : Colors.green[100], // Different color for bot messages
               borderRadius: BorderRadius.only(
-                topLeft: Radius.circular(isUser ? 12 : 0),
-                topRight: Radius.circular(isUser ? 0 : 12),
-                bottomLeft: Radius.circular(12),
-                bottomRight: Radius.circular(12),
+                topLeft: const Radius.circular(12),
+                topRight: const Radius.circular(12),
+                bottomLeft: isUser ? const Radius.circular(12) : Radius.zero,
+                bottomRight: isUser ? Radius.zero : const Radius.circular(12),
+              ),
+              border: Border.all(
+                color: isUser ? Colors.blue : Colors.green, // Different border color for bot messages
+                width: 1,
               ),
               boxShadow: [
                 BoxShadow(
@@ -38,7 +52,7 @@ class AnimatedMessage extends StatelessWidget {
                 ),
               ],
             ),
-            child: MessageParser.parse(message),
+            child: MessageParser.parse(message), // Reintroduce message parser
           ),
         ),
       ),
