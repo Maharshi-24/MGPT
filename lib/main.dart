@@ -26,6 +26,8 @@ class MyApp extends StatelessWidget {
 }
 
 class ChatScreen extends StatelessWidget {
+  final ScrollController _scrollController = ScrollController();
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -37,15 +39,34 @@ class ChatScreen extends StatelessWidget {
           Expanded(
             child: Consumer<ChatProvider>(
               builder: (context, chatProvider, child) {
-                return ListView.builder(
-                  itemCount: chatProvider.messages.length,
-                  itemBuilder: (context, index) {
-                    final message = chatProvider.messages[index];
-                    return ListTile(
-                      title: Text(message['text']),
-                      subtitle: Text(message['isUser'] ? 'You' : 'Bot'),
-                      tileColor: message['isUser'] ? Colors.blue[50] : Colors.grey[200],
+                // Scroll to the bottom when new messages are added
+                WidgetsBinding.instance.addPostFrameCallback((_) {
+                  if (_scrollController.hasClients) {
+                    _scrollController.animateTo(
+                      _scrollController.position.maxScrollExtent,
+                      duration: Duration(milliseconds: 300),
+                      curve: Curves.easeOut,
                     );
+                  }
+                });
+
+                return ListView.builder(
+                  controller: _scrollController,
+                  itemCount: chatProvider.messages.length + (chatProvider.isThinking ? 1 : 0),
+                  itemBuilder: (context, index) {
+                    if (index < chatProvider.messages.length) {
+                      final message = chatProvider.messages[index];
+                      return ListTile(
+                        title: Text(message['text']),
+                        subtitle: Text(message['isUser'] ? 'You' : 'Bot'),
+                        tileColor: message['isUser'] ? Colors.blue[50] : Colors.grey[200],
+                      );
+                    } else {
+                      // Show a loading indicator when the bot is thinking
+                      return ListTile(
+                        title: Center(child: CircularProgressIndicator()),
+                      );
+                    }
                   },
                 );
               },
@@ -82,6 +103,7 @@ class ChatScreen extends StatelessWidget {
 class ChatProvider with ChangeNotifier {
   final TextEditingController textController = TextEditingController();
   List<Map<String, dynamic>> messages = [];
+  bool isThinking = false;
 
   Future<void> sendMessage() async {
     final userMessage = textController.text.trim();
@@ -89,6 +111,7 @@ class ChatProvider with ChangeNotifier {
 
     // Add user message to the list
     messages.add({'text': userMessage, 'isUser': true});
+    isThinking = true;
     notifyListeners();
 
     // Clear the input field
@@ -105,12 +128,13 @@ class ChatProvider with ChangeNotifier {
       if (response.statusCode == 200) {
         final botMessage = jsonDecode(response.body)['response'];
         messages.add({'text': botMessage, 'isUser': false});
-        notifyListeners();
       } else {
         throw Exception('Failed to load response');
       }
     } catch (e) {
       messages.add({'text': 'Error: $e', 'isUser': false});
+    } finally {
+      isThinking = false;
       notifyListeners();
     }
   }
