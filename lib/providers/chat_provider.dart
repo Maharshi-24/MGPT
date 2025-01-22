@@ -21,7 +21,8 @@ class ChatProvider with ChangeNotifier {
 
     try {
       final response = await http.post(
-        Uri.parse('http://192.168.168.46:5000/api/chat'),
+        // Uri.parse('http://192.168.168.46:5000/api/chat'), // mobile hotspot
+        // Uri.parse('http://172.20.176.1:5000/api/chat'), // home wifi
         headers: {'Content-Type': 'application/json'},
         body: jsonEncode({'message': userMessage, 'userId': userId}),
       );

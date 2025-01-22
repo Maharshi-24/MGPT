@@ -30,7 +30,6 @@ class _ChatMessageListState extends State<ChatMessageList> {
   }
 
   void _onScroll() {
-    // Show the scroll-to-bottom button if the user scrolls up
     if (_scrollController.offset < _scrollController.position.maxScrollExtent - 100) {
       if (!_showScrollToBottomButton) {
         setState(() {
@@ -74,23 +73,37 @@ class _ChatMessageListState extends State<ChatMessageList> {
 
         return Stack(
           children: [
-            ListView.builder(
-              controller: _scrollController,
-              padding: const EdgeInsets.symmetric(vertical: 16),
-              itemCount: chatProvider.messages.length + (chatProvider.isThinking ? 1 : 0),
-              itemBuilder: (context, index) {
-                if (index < chatProvider.messages.length) {
-                  final message = chatProvider.messages[index];
-                  return AnimatedMessage(
-                    key: ValueKey(message['text']),
-                    message: message['text'],
-                    isUser: message['isUser'],
-                  );
-                } else {
-                  return const ThinkingIndicator();
-                }
-              },
-            ),
+            if (chatProvider.messages.isEmpty)
+              const Center(
+                child: Padding(
+                  padding: EdgeInsets.all(16.0),
+                  child: Text(
+                    'What can I help with?',
+                    style: TextStyle(
+                      fontSize: 30,
+                      color: Colors.white,
+                    ),
+                  ),
+                ),
+              )
+            else
+              ListView.builder(
+                controller: _scrollController,
+                padding: const EdgeInsets.symmetric(vertical: 16),
+                itemCount: chatProvider.messages.length + (chatProvider.isThinking ? 1 : 0),
+                itemBuilder: (context, index) {
+                  if (index < chatProvider.messages.length) {
+                    final message = chatProvider.messages[index];
+                    return AnimatedMessage(
+                      key: ValueKey(message['text']),
+                      message: message['text'],
+                      isUser: message['isUser'],
+                    );
+                  } else {
+                    return const ThinkingIndicator();
+                  }
+                },
+              ),
             // Scroll-to-bottom button with fade animation
             Positioned(
               bottom: 16,
