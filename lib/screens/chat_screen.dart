@@ -10,7 +10,7 @@ class ChatScreen extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(
         title: const Text('MChat'),
-        backgroundColor: Colors.blue, // Adjust the color to match the design
+        backgroundColor: Colors.blue.shade400, // Adjust the color to match the design
       ),
       body: Column(
         children: [

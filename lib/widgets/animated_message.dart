@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import '../utils/message_parser.dart'; // Ensure this import is present
+import '../utils/message_parser.dart';
 
 class AnimatedMessage extends StatelessWidget {
   final String message;
@@ -33,7 +33,7 @@ class AnimatedMessage extends StatelessWidget {
           child: Container(
             padding: const EdgeInsets.all(12),
             decoration: BoxDecoration(
-              color: isUser ? Colors.blue[100] : Colors.green[100], // Different color for bot messages
+              color: isUser ? Colors.blue[100] : Colors.green[100],
               borderRadius: BorderRadius.only(
                 topLeft: const Radius.circular(12),
                 topRight: const Radius.circular(12),
@@ -41,7 +41,7 @@ class AnimatedMessage extends StatelessWidget {
                 bottomRight: isUser ? Radius.zero : const Radius.circular(12),
               ),
               border: Border.all(
-                color: isUser ? Colors.blue : Colors.green, // Different border color for bot messages
+                color: isUser ? Colors.blue : Colors.green,
                 width: 1,
               ),
               boxShadow: [
@@ -52,7 +52,7 @@ class AnimatedMessage extends StatelessWidget {
                 ),
               ],
             ),
-            child: MessageParser.parse(message), // Reintroduce message parser
+            child: MessageParser.parse(message, context), // Pass context here
           ),
         ),
       ),
