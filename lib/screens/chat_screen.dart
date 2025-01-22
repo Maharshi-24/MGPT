@@ -13,7 +13,7 @@ class ChatScreen extends StatelessWidget {
         title: const Align(
           alignment: Alignment.centerLeft, // Align text to the left
           child: Text(
-            'ARIA',
+            'MGPT',
             style: TextStyle(color: Colors.white),
           ),
         ),
