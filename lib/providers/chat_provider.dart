@@ -6,6 +6,7 @@ class ChatProvider with ChangeNotifier {
   final TextEditingController textController = TextEditingController();
   List<Map<String, dynamic>> messages = [];
   bool isThinking = false;
+  final String userId = 'uniqueUserId'; // Use a unique identifier for each user
 
   Future<void> sendMessage() async {
     final userMessage = textController.text.trim();
@@ -21,7 +22,7 @@ class ChatProvider with ChangeNotifier {
       final response = await http.post(
         Uri.parse('http://192.168.168.46:5000/api/chat'),
         headers: {'Content-Type': 'application/json'},
-        body: jsonEncode({'message': userMessage}),
+        body: jsonEncode({'message': userMessage, 'userId': userId}),
       );
 
       if (response.statusCode == 200) {
