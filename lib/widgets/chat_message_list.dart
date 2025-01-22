@@ -106,7 +106,7 @@ class _ChatMessageListState extends State<ChatMessageList> {
                       width: 50, // Fixed size for the button
                       height: 50,
                       decoration: BoxDecoration(
-                        color: Colors.grey[700], // Button color
+                        color: Colors.grey[850], // Button color
                         shape: BoxShape.circle, // Make it circular
                         boxShadow: [
                           BoxShadow(
@@ -116,10 +116,8 @@ class _ChatMessageListState extends State<ChatMessageList> {
                           ),
                         ],
                       ),
-                      child: const Icon(
-                        Icons.arrow_downward,
-                        color: Colors.white,
-                        size: 24, // Larger icon size
+                      child: Center(
+                        child: _buildImageIcon(),
                       ),
                     ),
                   ),
@@ -130,5 +128,19 @@ class _ChatMessageListState extends State<ChatMessageList> {
         );
       },
     );
+  }
+
+  Widget _buildImageIcon() {
+    try {
+      return Image.asset(
+        'assets/images/scroll-to-bottom.png', // Ensure this path is correct
+        width: 20,
+        height: 20,
+        color: Colors.white,
+      );
+    } catch (e) {
+      print('Error loading image: $e');
+      return Icon(Icons.error); // Fallback icon if the image fails to load
+    }
   }
 }

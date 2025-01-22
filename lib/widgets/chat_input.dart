@@ -36,7 +36,7 @@ class ChatInput extends StatelessWidget {
                   borderSide: BorderSide.none,
                 ),
                 filled: true,
-                fillColor: Colors.grey[800], // Dark grey background
+                fillColor: Colors.grey[850], // Dark grey background
                 contentPadding: const EdgeInsets.symmetric(horizontal: 16),
               ),
             ),
