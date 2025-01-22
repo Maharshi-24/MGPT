@@ -2,8 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../widgets/chat/chat_message_list.dart';
 import '../widgets/chat/chat_input.dart';
-import '../widgets/chat/chat_input.dart';
-import '../widgets/chat/chat_message_list.dart';
 import '../widgets/drawer/custom_drawer.dart';
 import '../providers/chat_provider.dart';
 
@@ -70,6 +68,7 @@ class _ChatScreenState extends State<ChatScreen> {
               ),
               child: Column(
                 children: [
+                  // Custom AppBar
                   AppBar(
                     title: const Align(
                       alignment: Alignment.centerLeft,
@@ -81,13 +80,12 @@ class _ChatScreenState extends State<ChatScreen> {
                     backgroundColor: Colors.black87,
                     elevation: 0,
                     leading: IconButton(
-                      icon: Image.asset(
-                        'assets/images/drawer_icon.png',
-                        width: 24,
-                        height: 24,
+                      icon: const Icon(
+                        Icons.short_text, // Default Flutter drawer icon
                         color: Colors.white,
+                        size: 38,
                       ),
-                      onPressed: _toggleDrawer,
+                      onPressed: _toggleDrawer, // Toggle drawer state
                     ),
                   ),
                   Expanded(
