@@ -8,9 +8,17 @@ class ChatScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Colors.black87, // Dark background
       appBar: AppBar(
-        title: const Text('MChat'),
-        backgroundColor: Colors.blue.shade400, // Adjust the color to match the design
+        title: const Align(
+          alignment: Alignment.centerLeft, // Align text to the left
+          child: Text(
+            'ARIA',
+            style: TextStyle(color: Colors.white),
+          ),
+        ),
+        backgroundColor: Colors.black87, // Slightly lighter dark color for app bar
+        elevation: 0,
       ),
       body: Column(
         children: [

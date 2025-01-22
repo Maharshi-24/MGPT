@@ -12,30 +12,30 @@ class MessageParser {
         continue;
       }
 
-      // Handle headings
-      if (line.startsWith('### ')) {
-        spans.add(TextSpan(
-          text: '${line.substring(4)}\n',
-          style: const TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
-        ));
-      } else if (line.startsWith('## ')) {
-        spans.add(TextSpan(
-          text: '${line.substring(3)}\n',
-          style: const TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
-        ));
-      } else if (line.startsWith('# ')) {
-        spans.add(TextSpan(
-          text: '${line.substring(2)}\n',
-          style: const TextStyle(fontSize: 28, fontWeight: FontWeight.bold),
-        ));
-      }
-
       // Handle horizontal rules and custom separators
-      else if (line.trim().startsWith(RegExp(r'[-=*]{3,}'))) {
+      if (line.trim().startsWith(RegExp(r'[-=*]{3,}'))) {
         final lineLength = screenWidth * 0.8; // 80% of screen width
         spans.add(TextSpan(
           text: '${'─' * (lineLength ~/ 10.3)}\n', // Adjust length dynamically
           style: const TextStyle(color: Colors.grey),
+        ));
+      }
+
+      // Handle headings
+      else if (line.startsWith('### ')) {
+        spans.add(TextSpan(
+          text: '${line.substring(4)}\n',
+          style: const TextStyle(fontSize: 20, fontWeight: FontWeight.bold, color: Colors.white),
+        ));
+      } else if (line.startsWith('## ')) {
+        spans.add(TextSpan(
+          text: '${line.substring(3)}\n',
+          style: const TextStyle(fontSize: 24, fontWeight: FontWeight.bold, color: Colors.white),
+        ));
+      } else if (line.startsWith('# ')) {
+        spans.add(TextSpan(
+          text: '${line.substring(2)}\n',
+          style: const TextStyle(fontSize: 28, fontWeight: FontWeight.bold, color: Colors.white),
         ));
       }
 
@@ -51,12 +51,12 @@ class MessageParser {
       else if (line.startsWith('- ') || line.startsWith('* ') || line.startsWith('+ ')) {
         spans.add(TextSpan(
           text: '• ${line.substring(2)}\n', // Use a bullet point
-          style: const TextStyle(fontSize: 16),
+          style: const TextStyle(fontSize: 16, color: Colors.white),
         ));
       } else if (line.startsWith(RegExp(r'\d+\. '))) {
         spans.add(TextSpan(
           text: '$line\n',
-          style: const TextStyle(fontSize: 16),
+          style: const TextStyle(fontSize: 16, color: Colors.white),
         ));
       }
 
@@ -70,6 +70,7 @@ class MessageParser {
           if (match.start > currentIndex) {
             spans.add(TextSpan(
               text: line.substring(currentIndex, match.start),
+              style: const TextStyle(color: Colors.white),
             ));
           }
 
@@ -82,27 +83,27 @@ class MessageParser {
           if (boldText != null) {
             spans.add(TextSpan(
               text: boldText,
-              style: const TextStyle(fontWeight: FontWeight.bold),
+              style: const TextStyle(fontWeight: FontWeight.bold, color: Colors.white),
             ));
           } else if (italicText != null) {
             spans.add(TextSpan(
               text: italicText,
-              style: const TextStyle(fontStyle: FontStyle.italic),
+              style: const TextStyle(fontStyle: FontStyle.italic, color: Colors.white),
             ));
           } else if (strikethroughText != null) {
             spans.add(TextSpan(
               text: strikethroughText,
-              style: const TextStyle(decoration: TextDecoration.lineThrough),
+              style: const TextStyle(decoration: TextDecoration.lineThrough, color: Colors.white),
             ));
           } else if (underlineText != null) {
             spans.add(TextSpan(
               text: underlineText,
-              style: const TextStyle(decoration: TextDecoration.underline),
+              style: const TextStyle(decoration: TextDecoration.underline, color: Colors.white),
             ));
           } else if (codeText != null) {
             spans.add(TextSpan(
               text: codeText,
-              style: TextStyle(fontFamily: 'monospace', backgroundColor: Colors.grey[200]),
+              style: TextStyle(fontFamily: 'monospace', backgroundColor: Colors.grey[700], color: Colors.white),
             ));
           }
 
@@ -112,6 +113,7 @@ class MessageParser {
         if (currentIndex < line.length) {
           spans.add(TextSpan(
             text: line.substring(currentIndex),
+            style: const TextStyle(color: Colors.white),
           ));
         }
 
@@ -121,7 +123,7 @@ class MessageParser {
 
     return RichText(
       text: TextSpan(
-        style: const TextStyle(fontSize: 16, color: Colors.black),
+        style: const TextStyle(fontSize: 16, color: Colors.white),
         children: spans,
       ),
     );

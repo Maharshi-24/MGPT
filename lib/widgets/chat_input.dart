@@ -10,7 +10,7 @@ class ChatInput extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
-        color: Colors.white,
+        color: Colors.black87, // Dark input bar
         boxShadow: [
           BoxShadow(
             color: Colors.black.withOpacity(0.1),
@@ -24,27 +24,32 @@ class ChatInput extends StatelessWidget {
           Expanded(
             child: TextField(
               controller: context.read<ChatProvider>().textController,
+              style: const TextStyle(color: Colors.white), // White text
               decoration: InputDecoration(
                 hintText: 'Type a message...',
+                hintStyle: TextStyle(color: Colors.white), // White hint text
                 border: OutlineInputBorder(
                   borderRadius: BorderRadius.circular(24),
                   borderSide: BorderSide.none,
                 ),
                 filled: true,
-                fillColor: Colors.grey[100],
+                fillColor: Colors.grey[800], // Dark grey background
                 contentPadding: const EdgeInsets.symmetric(horizontal: 16),
               ),
             ),
           ),
           const SizedBox(width: 8),
-          FloatingActionButton(
-            onPressed: () {
-              context.read<ChatProvider>().sendMessage();
-            },
-            backgroundColor: Colors.blue,
-            elevation: 0,
-            mini: true,
-            child: const Icon(Icons.send, color: Colors.white),
+          Container(
+            decoration: BoxDecoration(
+              color: Colors.white, // White send button
+              borderRadius: BorderRadius.circular(24),
+            ),
+            child: IconButton(
+              onPressed: () {
+                context.read<ChatProvider>().sendMessage();
+              },
+              icon: const Icon(Icons.arrow_upward, color: Colors.black), // Black upward arrow
+            ),
           ),
         ],
       ),
