@@ -4,6 +4,7 @@ import 'dart:convert';
 
 class ChatProvider with ChangeNotifier {
   final TextEditingController textController = TextEditingController();
+  final FocusNode focusNode = FocusNode(); // Add a FocusNode
   List<Map<String, dynamic>> messages = [];
   bool isThinking = false;
   final String userId = 'uniqueUserId'; // Use a unique identifier for each user
@@ -37,5 +38,12 @@ class ChatProvider with ChangeNotifier {
       isThinking = false;
       notifyListeners();
     }
+  }
+
+  // Dispose the FocusNode when not needed
+  @override
+  void dispose() {
+    focusNode.dispose();
+    super.dispose();
   }
 }

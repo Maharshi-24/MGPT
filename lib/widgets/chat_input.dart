@@ -7,6 +7,8 @@ class ChatInput extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final chatProvider = Provider.of<ChatProvider>(context);
+
     return Container(
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
@@ -23,7 +25,8 @@ class ChatInput extends StatelessWidget {
         children: [
           Expanded(
             child: TextField(
-              controller: context.read<ChatProvider>().textController,
+              controller: chatProvider.textController,
+              focusNode: chatProvider.focusNode, // Pass the FocusNode
               style: const TextStyle(color: Colors.white), // White text
               decoration: InputDecoration(
                 hintText: 'Type a message...',
@@ -46,7 +49,7 @@ class ChatInput extends StatelessWidget {
             ),
             child: IconButton(
               onPressed: () {
-                context.read<ChatProvider>().sendMessage();
+                chatProvider.sendMessage();
               },
               icon: const Icon(Icons.arrow_upward, color: Colors.black), // Black upward arrow
             ),
