@@ -32,10 +32,10 @@ class AnimatedMessage extends StatelessWidget {
           alignment: isUser ? Alignment.centerRight : Alignment.centerLeft,
           child: isUser
               ? Container(
-            padding: const EdgeInsets.all(12),
-            decoration: BoxDecoration(
+              padding: const EdgeInsets.fromLTRB(12, 16, 12, 0), // Adjust padding here
+              decoration: BoxDecoration(
               color: Colors.grey[900], // User bubble color
-              borderRadius: BorderRadius.circular(18), // Rounded corners
+              borderRadius: BorderRadius.circular(16), // Rounded corners
             ),
             child: MessageParser.parse(message, context),
           )
