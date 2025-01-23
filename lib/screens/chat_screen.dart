@@ -240,7 +240,7 @@ class _ChatScreenState extends State<ChatScreen> with WidgetsBindingObserver {
         const PopupMenuItem<String>(
           value: 'share',
           child: ListTile(
-            leading: Icon(Icons.share, color: Colors.white),
+            leading: Icon(Icons.share_outlined, color: Colors.white),
             title: Text('Share', style: TextStyle(color: Colors.white)),
           ),
         ),
@@ -257,21 +257,21 @@ class _ChatScreenState extends State<ChatScreen> with WidgetsBindingObserver {
         const PopupMenuItem<String>(
           value: 'archive',
           child: ListTile(
-            leading: Icon(Icons.archive, color: Colors.white),
+            leading: Icon(Icons.archive_outlined, color: Colors.white),
             title: Text('Archive', style: TextStyle(color: Colors.white)),
           ),
         ),
         const PopupMenuItem<String>(
           value: 'delete',
           child: ListTile(
-            leading: Icon(Icons.delete, color: Colors.white),
+            leading: Icon(Icons.delete_outline, color: Colors.white),
             title: Text('Delete', style: TextStyle(color: Colors.white)),
           ),
         ),
         const PopupMenuItem<String>(
           value: 'move_to_project',
           child: ListTile(
-            leading: Icon(Icons.folder, color: Colors.white),
+            leading: Icon(Icons.folder_open_outlined, color: Colors.white),
             title: Text('Move to Project', style: TextStyle(color: Colors.white)),
           ),
         ),
@@ -281,7 +281,7 @@ class _ChatScreenState extends State<ChatScreen> with WidgetsBindingObserver {
         const PopupMenuItem<String>(
           value: 'temporary_chat',
           child: ListTile(
-            leading: Icon(Icons.timer, color: Colors.white),
+            leading: Icon(Icons.chat_bubble_outline, color: Colors.white),
             title: Text('Temporary Chat', style: TextStyle(color: Colors.white)),
           ),
         ),
