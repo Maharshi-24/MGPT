@@ -5,13 +5,13 @@ import '../../../utils/message_parser.dart';
 class AnimatedMessage extends StatelessWidget {
   final String message;
   final bool isUser;
-  final bool isFirstMessage; // Add this parameter
+  final bool isFirstMessage; // For user messages only
 
   const AnimatedMessage({
     super.key,
     required this.message,
     required this.isUser,
-    required this.isFirstMessage, // Add this parameter
+    required this.isFirstMessage,
   });
 
   void _showMessageOptions(BuildContext context, Offset tapPosition) {
@@ -23,81 +23,127 @@ class AnimatedMessage extends StatelessWidget {
 
     // Initialize the overlayEntry
     overlayEntry = OverlayEntry(
-      builder: (context) => GestureDetector(
-        // Close the overlay when tapping anywhere on the screen
-        onTap: () {
-          overlayEntry.remove();
-        },
-        child: Material(
-          color: Colors.transparent,
-          child: Stack(
-            children: [
-              // Transparent background to capture taps
-              Positioned.fill(
-                child: Container(
-                  color: Colors.transparent,
-                ),
-              ),
-              // Floating container with options
-              Positioned(
-                right: 16, // Align to the right
-                top: isFirstMessage
-                    ? messagePosition.dy + renderBox.size.height + 10 // Below the bubble for the first message
-                    : messagePosition.dy - 150, // Above the bubble for other messages
-                child: Container(
-                  decoration: BoxDecoration(
-                    color: const Color(0xFF141414),
-                    borderRadius: BorderRadius.circular(8),
-                    boxShadow: [
-                      BoxShadow(
-                        color: Colors.black.withOpacity(0.2),
-                        blurRadius: 8,
-                        offset: const Offset(0, 4),
-                      ),
-                    ],
+      builder: (context) =>
+          GestureDetector(
+            // Close the overlay when tapping anywhere on the screen
+            onTap: () {
+              overlayEntry.remove();
+            },
+            child: Material(
+              color: Colors.transparent,
+              child: Stack(
+                children: [
+                  // Transparent background to capture taps
+                  Positioned.fill(
+                    child: Container(
+                      color: Colors.transparent,
+                    ),
                   ),
-                  padding: const EdgeInsets.all(8),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      _buildOptionButton(
-                        icon: Icons.content_copy_outlined,
-                        label: 'Copy',
-                        onTap: () {
-                          // Copy the message to clipboard
-                          Clipboard.setData(ClipboardData(text: message));
-                          ScaffoldMessenger.of(context).showSnackBar(
-                            const SnackBar(content: Text('Copied to clipboard')),
-                          );
-                          overlayEntry.remove(); // Close the overlay
-                        },
+                  // Floating container with options
+                  Positioned(
+                    right: isUser ? 16 : null,
+                    // Align to the right for user messages
+                    left: isUser ? null : 16,
+                    // Align to the left for AI messages
+                    top: isUser
+                        ? (isFirstMessage
+                        ? messagePosition.dy + renderBox.size.height +
+                        10 // Below the bubble for the first user message
+                        : messagePosition.dy -
+                        100) // Above the bubble for other user messages
+                        : tapPosition.dy - 50,
+                    // Near the long press location for AI messages
+                    child: Material(
+                      color: Colors.transparent,
+                      // Ensure the Material widget is transparent
+                      child: Container(
+                        decoration: BoxDecoration(
+                          color: const Color(0xFF141414),
+                          borderRadius: BorderRadius.circular(8),
+                          boxShadow: [
+                            BoxShadow(
+                              color: Colors.black.withOpacity(0.2),
+                              blurRadius: 8,
+                              offset: const Offset(0, 4),
+                            ),
+                          ],
+                        ),
+                        padding: const EdgeInsets.all(8),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            if (isUser) // Show all options for user messages
+                              _buildOptionButton(
+                                icon: Icons.content_copy_outlined,
+                                label: 'Copy',
+                                onTap: () {
+                                  // Copy the message to clipboard
+                                  Clipboard.setData(
+                                      ClipboardData(text: message));
+                                  ScaffoldMessenger.of(context).showSnackBar(
+                                    const SnackBar(
+                                        content: Text('Copied to clipboard')),
+                                  );
+                                  overlayEntry.remove(); // Close the overlay
+                                },
+                              ),
+                            if (isUser) // Show all options for user messages
+                              const SizedBox(height: 12),
+                            if (isUser) // Show all options for user messages
+                              _buildOptionButton(
+                                icon: Icons.text_snippet_outlined,
+                                label: 'Select Text',
+                                onTap: () {
+                                  // Implement text selection logic
+                                  overlayEntry.remove(); // Close the overlay
+                                },
+                              ),
+                            if (isUser) // Show all options for user messages
+                              const SizedBox(height: 12),
+                            if (isUser) // Show all options for user messages
+                              _buildOptionButton(
+                                icon: Icons.edit_outlined,
+                                label: 'Edit Message',
+                                onTap: () {
+                                  // Implement message editing logic
+                                  overlayEntry.remove(); // Close the overlay
+                                },
+                              ),
+                            if (!isUser) // Show only Copy and Select Text for AI messages
+                              _buildOptionButton(
+                                icon: Icons.content_copy_outlined,
+                                label: 'Copy',
+                                onTap: () {
+                                  // Copy the message to clipboard
+                                  Clipboard.setData(
+                                      ClipboardData(text: message));
+                                  ScaffoldMessenger.of(context).showSnackBar(
+                                    const SnackBar(
+                                        content: Text('Copied to clipboard')),
+                                  );
+                                  overlayEntry.remove(); // Close the overlay
+                                },
+                              ),
+                            if (!isUser) // Show only Copy and Select Text for AI messages
+                              const SizedBox(height: 12),
+                            if (!isUser) // Show only Copy and Select Text for AI messages
+                              _buildOptionButton(
+                                icon: Icons.text_snippet_outlined,
+                                label: 'Select Text',
+                                onTap: () {
+                                  // Implement text selection logic
+                                  overlayEntry.remove(); // Close the overlay
+                                },
+                              ),
+                          ],
+                        ),
                       ),
-                      const SizedBox(height: 12), // Add a vertical gap
-                      _buildOptionButton(
-                        icon: Icons.text_snippet_outlined,
-                        label: 'Select Text',
-                        onTap: () {
-                          // Implement text selection logic
-                          overlayEntry.remove(); // Close the overlay
-                        },
-                      ),
-                      const SizedBox(height: 12), // Add another vertical gap
-                      _buildOptionButton(
-                        icon: Icons.edit_outlined,
-                        label: 'Edit Message',
-                        onTap: () {
-                          // Implement message editing logic
-                          overlayEntry.remove(); // Close the overlay
-                        },
-                      ),
-                    ],
+                    ),
                   ),
-                ),
+                ],
               ),
-            ],
+            ),
           ),
-        ),
-      ),
     );
 
     // Insert the overlay into the overlay stack
@@ -109,24 +155,30 @@ class AnimatedMessage extends StatelessWidget {
     required String label,
     required VoidCallback onTap,
   }) {
-    return InkWell(
-      onTap: onTap,
-      child: Padding(
-        padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 16),
-        child: Row(
-          children: [
-            Icon(icon, color: Colors.white, size: 20),
-            const SizedBox(width: 8),
-            Text(
-              label,
-              style: const TextStyle(color: Colors.white, fontSize: 14),
-            ),
-          ],
+    return Material(
+      color: Colors.transparent, // Ensure the Material widget is transparent
+      child: InkWell(
+        onTap: onTap, // Handle the tap event
+        splashColor: Colors.grey.withOpacity(1),
+        borderRadius: BorderRadius.circular(8), // Ripple effect boundary
+        child: Padding(
+          padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 16),
+          child: Row(
+            children: [
+              Icon(icon, color: Colors.white, size: 20),
+              const SizedBox(width: 8),
+              Text(
+                label,
+                style: const TextStyle(color: Colors.white, fontSize: 14),
+              ),
+            ],
+          ),
         ),
       ),
     );
   }
 
+  @override
   @override
   Widget build(BuildContext context) {
     return AnimatedSwitcher(
@@ -157,18 +209,26 @@ class AnimatedMessage extends StatelessWidget {
                 // Handle the tap event here
                 print("Message tapped: $message");
               },
-              borderRadius: BorderRadius.circular(16),
-              splashColor: Colors.grey.withOpacity(0.3),
+              borderRadius: BorderRadius.circular(16), // Ripple effect boundary
+              splashColor: Colors.grey.withOpacity(0.5), // Ripple color
               child: isUser
                   ? Container(
                 padding: const EdgeInsets.fromLTRB(12, 16, 12, 0),
                 decoration: BoxDecoration(
-                  color: Colors.grey[900],
+                  color: const Color(0xFF141414),
                   borderRadius: BorderRadius.circular(16),
                 ),
                 child: MessageParser.parse(message, context),
               )
-                  : MessageParser.parse(message, context),
+                  : Container(
+                padding: const EdgeInsets.fromLTRB(12, 16, 12, 0),
+                decoration: BoxDecoration(
+                  color: Colors.black87,
+                  borderRadius: BorderRadius.circular(
+                      16), // Match the borderRadius
+                ),
+                child: MessageParser.parse(message, context),
+              ),
             ),
           ),
         ),
