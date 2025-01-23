@@ -20,15 +20,29 @@ class ChatProvider with ChangeNotifier {
     textController.clear();
 
     try {
-      final response = await http.post(
-        Uri.parse('http://172.20.176.1:5000/api/chat'),
-        headers: {'Content-Type': 'application/json'},
-        body: jsonEncode({'message': userMessage, 'userId': userId}),
-      );
+      final request = http.Request('POST', Uri.parse('http://172.20.176.1:5000/api/chat'))
+        ..headers['Content-Type'] = 'application/json'
+        ..body = jsonEncode({'message': userMessage, 'userId': userId});
 
-      if (response.statusCode == 200) {
-        final botMessage = jsonDecode(response.body)['response'];
-        messages.add({'text': botMessage, 'isUser': false});
+      final streamedResponse = await request.send();
+
+      if (streamedResponse.statusCode == 200) {
+        String botResponse = '';
+        messages.add({'text': '', 'isUser': false}); // Add an empty message for the bot
+
+        await streamedResponse.stream.transform(utf8.decoder).listen((chunk) {
+          // Parse the chunk (assuming it's in the format `data: {"response":"..."}`)
+          if (chunk.startsWith('data: ')) {
+            final jsonString = chunk.substring(6).trim();
+            final jsonResponse = jsonDecode(jsonString);
+            final content = jsonResponse['response'];
+
+            // Update the bot's response incrementally
+            botResponse += content;
+            messages.last['text'] = botResponse;
+            notifyListeners();
+          }
+        }).asFuture();
       } else {
         throw Exception('Failed to load response');
       }
