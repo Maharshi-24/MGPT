@@ -22,35 +22,35 @@ class ChatProvider with ChangeNotifier {
     try {
       final request = http.Request('POST', Uri.parse('http://172.20.176.1:5000/api/chat'))
         ..headers['Content-Type'] = 'application/json'
-        ..body = jsonEncode({'message': userMessage, 'userId': userId});
+    ..body = jsonEncode({'message': userMessage, 'userId': userId});
 
-      final streamedResponse = await request.send();
+    final streamedResponse = await request.send();
 
-      if (streamedResponse.statusCode == 200) {
-        String botResponse = '';
-        messages.add({'text': '', 'isUser': false}); // Add an empty message for the bot
+    if (streamedResponse.statusCode == 200) {
+    String botResponse = '';
+    messages.add({'text': '', 'isUser': false}); // Add an empty message for the bot
 
-        await streamedResponse.stream.transform(utf8.decoder).listen((chunk) {
-          // Parse the chunk (assuming it's in the format `data: {"response":"..."}`)
-          if (chunk.startsWith('data: ')) {
-            final jsonString = chunk.substring(6).trim();
-            final jsonResponse = jsonDecode(jsonString);
-            final content = jsonResponse['response'];
+    await streamedResponse.stream.transform(utf8.decoder).listen((chunk) {
+    // Parse the chunk (assuming it's in the format `data: {"response":"..."}`)
+    if (chunk.startsWith('data: ')) {
+    final jsonString = chunk.substring(6).trim();
+    final jsonResponse = jsonDecode(jsonString);
+    final content = jsonResponse['response'];
 
-            // Update the bot's response incrementally
-            botResponse += content;
-            messages.last['text'] = botResponse;
-            notifyListeners();
-          }
-        }).asFuture();
-      } else {
-        throw Exception('Failed to load response');
-      }
+    // Update the bot's response incrementally
+    botResponse += content;
+    messages.last['text'] = botResponse;
+    notifyListeners();
+    }
+    }).asFuture();
+    } else {
+    throw Exception('Failed to load response');
+    }
     } catch (e) {
-      messages.add({'text': 'Error: $e', 'isUser': false});
+    messages.add({'text': 'Error: $e', 'isUser': false});
     } finally {
-      isThinking = false;
-      notifyListeners();
+    isThinking = false;
+    notifyListeners();
     }
   }
 

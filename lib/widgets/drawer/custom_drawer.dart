@@ -171,10 +171,9 @@ class _DrawerClipper extends CustomClipper<Path> {
   Path getClip(Size size) {
     final path = Path();
     path.moveTo(0, 0); // Start at the top-left corner
-    path.lineTo(size.width - 20, 0); // Move to the top-right corner (minus 20 for the pointy edge)
+    path.lineTo(size.width + 20, 0); // Move to the top-right corner (minus 20 for the pointy edge)
     path.lineTo(size.width, 20); // Create a diagonal line for the pointy edge
-    path.lineTo(size.width, size.height - 20); // Move to the bottom-right corner (minus 20 for the pointy edge)
-    path.lineTo(size.width - 20, size.height); // Create a diagonal line for the pointy edge
+    path.lineTo(size.width, size.height + 20); // Move to the bottom-right corner (minus 20 for the pointy edge)
     path.lineTo(0, size.height); // Move to the bottom-left corner
     path.close(); // Close the path
     return path;
