@@ -106,16 +106,19 @@ class _ChatMessageListState extends State<ChatMessageList> {
               )
             else
               ListView.builder(
-                controller: widget.scrollController, // Use the passed ScrollController
+                controller: widget.scrollController,
                 padding: const EdgeInsets.symmetric(vertical: 16),
                 itemCount: chatProvider.messages.length + (chatProvider.isThinking ? 1 : 0),
                 itemBuilder: (context, index) {
                   if (index < chatProvider.messages.length) {
                     final message = chatProvider.messages[index];
+                    // Check if this is the first message in the chat
+                    final isFirstMessage = index == 0;
                     return AnimatedMessage(
                       key: ValueKey(message['text']),
                       message: message['text'],
                       isUser: message['isUser'],
+                      isFirstMessage: isFirstMessage, // Pass the parameter
                     );
                   } else {
                     return const ThinkingIndicator();

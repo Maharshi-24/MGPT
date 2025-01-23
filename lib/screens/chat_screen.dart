@@ -290,7 +290,7 @@ class _ChatScreenState extends State<ChatScreen> with WidgetsBindingObserver {
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(8), // Rounded corners
       ),
-      color: Colors.black, // Background color of the popup menu
+      color: const Color(0xFF141414), // Background color of the popup menu
     ).then((value) {
       if (value != null) {
         _onPopupMenuItemSelected(value);
