@@ -15,7 +15,9 @@ class ChatScreen extends StatefulWidget {
 class _ChatScreenState extends State<ChatScreen> with WidgetsBindingObserver {
   bool _isDrawerOpen = false;
   double _drawerOffset = 0.0;
-  final ScrollController _scrollController = ScrollController(); // Add ScrollController
+  final ScrollController _scrollController = ScrollController();
+  bool _isPopupOpen = false; // Track if the popup menu is open
+  final GlobalKey _tripleDotKey = GlobalKey(); // Key to locate the triple dots icon
 
   @override
   void initState() {
@@ -78,6 +80,35 @@ class _ChatScreenState extends State<ChatScreen> with WidgetsBindingObserver {
     }
   }
 
+  // Handle popup menu item selection
+  void _onPopupMenuItemSelected(String value) {
+    switch (value) {
+      case 'view_details':
+        print('View Details selected');
+        break;
+      case 'share':
+        print('Share selected');
+        break;
+      case 'rename':
+        print('Rename selected');
+        break;
+      case 'archive':
+        print('Archive selected');
+        break;
+      case 'delete':
+        print('Delete selected');
+        break;
+      case 'move_to_project':
+        print('Move to Project selected');
+        break;
+      case 'temporary_chat':
+        print('Temporary Chat selected');
+        break;
+      default:
+        break;
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     final chatProvider = Provider.of<ChatProvider>(context);
@@ -121,6 +152,35 @@ class _ChatScreenState extends State<ChatScreen> with WidgetsBindingObserver {
                       ),
                       onPressed: _toggleDrawer, // Toggle drawer state
                     ),
+                    actions: [
+                      // Edit icon on the left of the triple dots
+                      IconButton(
+                        icon: const Icon(
+                          Icons.drive_file_rename_outline,
+                          color: Colors.white,
+                        ),
+                        onPressed: () {
+                          // Handle edit icon press
+                          print('Edit icon pressed');
+                        },
+                      ),
+                      // Triple dots menu with ripple effect
+                      InkWell(
+                        key: _tripleDotKey, // Assign a key to the triple dots icon
+                        borderRadius: BorderRadius.circular(20), // Ripple effect boundary
+                        onTap: () {
+                          // Open the popup menu programmatically
+                          _showCustomPopupMenu(context);
+                        },
+                        child: const Padding(
+                          padding: EdgeInsets.all(8.0),
+                          child: Icon(
+                            Icons.more_vert,
+                            color: Colors.white,
+                          ),
+                        ),
+                      ),
+                    ],
                   ),
                   Expanded(
                     child: ChatMessageList(
@@ -152,5 +212,89 @@ class _ChatScreenState extends State<ChatScreen> with WidgetsBindingObserver {
         ),
       ),
     );
+  }
+
+  // Show custom popup menu with fade-in and scale-in animation
+  void _showCustomPopupMenu(BuildContext context) {
+    // Get the position of the triple dots icon
+    final RenderBox renderBox = _tripleDotKey.currentContext!.findRenderObject() as RenderBox;
+    final Offset offset = renderBox.localToGlobal(Offset.zero);
+
+    showMenu<String>(
+      context: context,
+      position: RelativeRect.fromLTRB(
+        offset.dx, // Left position (x-coordinate of the triple dots icon)
+        offset.dy + renderBox.size.height, // Top position (below the triple dots icon)
+        offset.dx + renderBox.size.width, // Right position
+        offset.dy + renderBox.size.height + 100, // Bottom position
+      ),
+      items: <PopupMenuEntry<String>>[
+        // First section
+        const PopupMenuItem<String>(
+          value: 'view_details',
+          child: ListTile(
+            leading: Icon(Icons.info_outline, color: Colors.white),
+            title: Text('View Details', style: TextStyle(color: Colors.white)),
+          ),
+        ),
+        const PopupMenuItem<String>(
+          value: 'share',
+          child: ListTile(
+            leading: Icon(Icons.share, color: Colors.white),
+            title: Text('Share', style: TextStyle(color: Colors.white)),
+          ),
+        ),
+        // Divider
+        const PopupMenuDivider(),
+        // Second section
+        const PopupMenuItem<String>(
+          value: 'rename',
+          child: ListTile(
+            leading: Icon(Icons.edit_outlined, color: Colors.white),
+            title: Text('Rename', style: TextStyle(color: Colors.white)),
+          ),
+        ),
+        const PopupMenuItem<String>(
+          value: 'archive',
+          child: ListTile(
+            leading: Icon(Icons.archive, color: Colors.white),
+            title: Text('Archive', style: TextStyle(color: Colors.white)),
+          ),
+        ),
+        const PopupMenuItem<String>(
+          value: 'delete',
+          child: ListTile(
+            leading: Icon(Icons.delete, color: Colors.white),
+            title: Text('Delete', style: TextStyle(color: Colors.white)),
+          ),
+        ),
+        const PopupMenuItem<String>(
+          value: 'move_to_project',
+          child: ListTile(
+            leading: Icon(Icons.folder, color: Colors.white),
+            title: Text('Move to Project', style: TextStyle(color: Colors.white)),
+          ),
+        ),
+        // Divider
+        const PopupMenuDivider(),
+        // Third section
+        const PopupMenuItem<String>(
+          value: 'temporary_chat',
+          child: ListTile(
+            leading: Icon(Icons.timer, color: Colors.white),
+            title: Text('Temporary Chat', style: TextStyle(color: Colors.white)),
+          ),
+        ),
+      ],
+      elevation: 8,
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(8), // Rounded corners
+      ),
+      color: Colors.black, // Background color of the popup menu
+    ).then((value) {
+      if (value != null) {
+        _onPopupMenuItemSelected(value);
+      }
+    });
   }
 }
