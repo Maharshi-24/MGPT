@@ -40,7 +40,7 @@ class ChatProvider with ChangeNotifier {
     // Update the bot's response incrementally
     botResponse += content;
     messages.last['text'] = botResponse;
-    notifyListeners();
+    notifyListeners(); // Notify listeners to update the UI and scroll down
     }
     }).asFuture();
     } else {

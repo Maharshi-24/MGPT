@@ -12,9 +12,33 @@ class ChatScreen extends StatefulWidget {
   _ChatScreenState createState() => _ChatScreenState();
 }
 
-class _ChatScreenState extends State<ChatScreen> {
+class _ChatScreenState extends State<ChatScreen> with WidgetsBindingObserver {
   bool _isDrawerOpen = false;
   double _drawerOffset = 0.0;
+  final ScrollController _scrollController = ScrollController(); // Add ScrollController
+
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addObserver(this); // Listen to keyboard visibility changes
+  }
+
+  @override
+  void dispose() {
+    WidgetsBinding.instance.removeObserver(this); // Stop listening to keyboard visibility changes
+    _scrollController.dispose(); // Dispose the ScrollController
+    super.dispose();
+  }
+
+  @override
+  void didChangeMetrics() {
+    // Called when the keyboard visibility changes
+    final bottomInset = WidgetsBinding.instance.window.viewInsets.bottom;
+    if (bottomInset > 0) {
+      // Keyboard is open, scroll to the bottom
+      _scrollToBottom();
+    }
+  }
 
   void _toggleDrawer() {
     setState(() {
@@ -41,6 +65,16 @@ class _ChatScreenState extends State<ChatScreen> {
         _isDrawerOpen = false;
         _drawerOffset = 0.0;
       });
+    }
+  }
+
+  void _scrollToBottom() {
+    if (_scrollController.hasClients) {
+      _scrollController.animateTo(
+        _scrollController.position.maxScrollExtent,
+        duration: const Duration(milliseconds: 300),
+        curve: Curves.easeOut,
+      );
     }
   }
 
@@ -89,7 +123,9 @@ class _ChatScreenState extends State<ChatScreen> {
                     ),
                   ),
                   Expanded(
-                    child: const ChatMessageList(),
+                    child: ChatMessageList(
+                      scrollController: _scrollController, // Pass the ScrollController
+                    ),
                   ),
                   const ChatInput(),
                 ],

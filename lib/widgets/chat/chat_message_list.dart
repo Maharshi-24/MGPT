@@ -6,32 +6,40 @@ import 'animated_message.dart';
 import 'thinking_indicator.dart';
 
 class ChatMessageList extends StatefulWidget {
-  const ChatMessageList({super.key});
+  final ScrollController scrollController; // Accept ScrollController from parent
+
+  const ChatMessageList({super.key, required this.scrollController});
 
   @override
   _ChatMessageListState createState() => _ChatMessageListState();
 }
 
 class _ChatMessageListState extends State<ChatMessageList> {
-  final ScrollController _scrollController = ScrollController();
   bool _showScrollToBottomButton = false;
+  bool _userHasInterruptedScroll = false; // Track if the user has interrupted auto-scroll
   int _previousMessageCount = 0;
 
   @override
   void initState() {
     super.initState();
-    _scrollController.addListener(_onScroll);
+    widget.scrollController.addListener(_onScroll); // Use the passed ScrollController
   }
 
   @override
   void dispose() {
-    _scrollController.removeListener(_onScroll);
-    _scrollController.dispose();
+    widget.scrollController.removeListener(_onScroll); // Remove listener
     super.dispose();
   }
 
   void _onScroll() {
-    if (_scrollController.offset < _scrollController.position.maxScrollExtent - 100) {
+    // Check if the user has scrolled up manually
+    if (widget.scrollController.offset < widget.scrollController.position.maxScrollExtent - 100) {
+      if (!_userHasInterruptedScroll) {
+        setState(() {
+          _userHasInterruptedScroll = true; // User has interrupted auto-scroll
+        });
+      }
+
       if (!_showScrollToBottomButton) {
         setState(() {
           _showScrollToBottomButton = true;
@@ -47,26 +55,36 @@ class _ChatMessageListState extends State<ChatMessageList> {
   }
 
   void _scrollToBottom() {
-    _scrollController.animateTo(
-      _scrollController.position.maxScrollExtent,
+    widget.scrollController.animateTo(
+      widget.scrollController.position.maxScrollExtent,
       duration: const Duration(milliseconds: 300),
       curve: Curves.easeOut,
     );
+
+    // Reset the flag when the user clicks the scroll-to-bottom button
+    setState(() {
+      _userHasInterruptedScroll = false;
+    });
+  }
+
+  void _autoScrollToBottom() {
+    if (!_userHasInterruptedScroll && widget.scrollController.hasClients) {
+      widget.scrollController.animateTo(
+        widget.scrollController.position.maxScrollExtent,
+        duration: const Duration(milliseconds: 300),
+        curve: Curves.easeOut,
+      );
+    }
   }
 
   @override
   Widget build(BuildContext context) {
     return Consumer<ChatProvider>(
       builder: (context, chatProvider, child) {
-        if (chatProvider.messages.length > _previousMessageCount) {
+        // Auto-scroll to bottom when new messages are added or the bot is thinking
+        if (chatProvider.messages.length > _previousMessageCount || chatProvider.isThinking) {
           WidgetsBinding.instance.addPostFrameCallback((_) {
-            if (_scrollController.hasClients) {
-              _scrollController.animateTo(
-                _scrollController.position.maxScrollExtent,
-                duration: const Duration(milliseconds: 300),
-                curve: Curves.easeOut,
-              );
-            }
+            _autoScrollToBottom();
           });
           _previousMessageCount = chatProvider.messages.length;
         }
@@ -88,7 +106,7 @@ class _ChatMessageListState extends State<ChatMessageList> {
               )
             else
               ListView.builder(
-                controller: _scrollController,
+                controller: widget.scrollController, // Use the passed ScrollController
                 padding: const EdgeInsets.symmetric(vertical: 16),
                 itemCount: chatProvider.messages.length + (chatProvider.isThinking ? 1 : 0),
                 itemBuilder: (context, index) {
