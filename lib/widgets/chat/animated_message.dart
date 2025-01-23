@@ -270,21 +270,21 @@ class AnimatedMessage extends StatelessWidget {
               splashColor: Colors.grey.withOpacity(1), // Ripple color
               child: isUser
                   ? Container(
-                padding: const EdgeInsets.fromLTRB(12, 16, 12, 0),
-                decoration: BoxDecoration(
-                  color: const Color(0xFF141414),
-                  borderRadius: BorderRadius.circular(16),
-                ),
-                child: MessageParser.parse(message, context),
-              )
+                    padding: const EdgeInsets.fromLTRB(12, 16, 12, 0),
+                    decoration: BoxDecoration(
+                      color: const Color(0xA32C2929),
+                      borderRadius: BorderRadius.circular(16),
+                    ),
+                    child: MessageParser.parse(message, context),
+                  )
                   : Container(
-                padding: const EdgeInsets.fromLTRB(12, 16, 12, 0),
-                decoration: BoxDecoration(
-                  color: Colors.black87,
-                  borderRadius: BorderRadius.circular(16), // Match the borderRadius
-                ),
-                child: MessageParser.parse(message, context),
-              ),
+                    padding: const EdgeInsets.fromLTRB(12, 16, 12, 0),
+                    decoration: BoxDecoration(
+                      color: Colors.black87,
+                      borderRadius: BorderRadius.circular(16), // Match the borderRadius
+                    ),
+                    child: MessageParser.parse(message, context),
+                  ),
             ),
 
           ),
