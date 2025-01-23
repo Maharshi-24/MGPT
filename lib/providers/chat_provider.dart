@@ -9,6 +9,17 @@ class ChatProvider with ChangeNotifier {
   bool isThinking = false;
   final String userId = 'uniqueUserId';
 
+  // Add this method to update a message
+  void updateMessage(int index, String newMessage) {
+    if (index >= 0 && index < messages.length) {
+      messages[index]['text'] = newMessage; // Update the message text
+      notifyListeners(); // Notify listeners to update the UI
+      print('Message updated at index $index: $newMessage'); // Debug print
+    } else {
+      print('Invalid index: $index'); // Debug print
+    }
+  }
+
   Future<void> sendMessage() async {
     final userMessage = textController.text.trim();
     if (userMessage.isEmpty) return;
