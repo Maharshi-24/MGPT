@@ -275,12 +275,12 @@ class AnimatedMessage extends StatelessWidget {
                 print("Message tapped: $message");
               },
               borderRadius: BorderRadius.circular(16), // Ripple effect boundary
-              splashColor: Colors.grey.withOpacity(0.5), // Ripple color
+              splashColor: Colors.grey.withOpacity(1), // Ripple color
               child: isUser
                   ? Container(
                 padding: const EdgeInsets.fromLTRB(12, 16, 12, 0),
                 decoration: BoxDecoration(
-                  color: const Color(0xFF141414),
+                  color: const Color(0xCB282828),
                   borderRadius: BorderRadius.circular(16),
                 ),
                 child: MessageParser.parse(message, context),
