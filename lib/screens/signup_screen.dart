@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart'; // Import for HapticFeedback
 import 'package:firebase_auth/firebase_auth.dart';
 import 'login_screen.dart';
 
@@ -122,6 +123,7 @@ class _SignupScreenState extends State<SignupScreen> with SingleTickerProviderSt
           password: _passwordController.text.trim(),
         );
         print('Signup successful!');
+        HapticFeedback.lightImpact(); // Haptic feedback on successful sign-up
         Navigator.pushReplacement(
           context,
           MaterialPageRoute(builder: (context) => const LoginScreen()),
@@ -131,6 +133,7 @@ class _SignupScreenState extends State<SignupScreen> with SingleTickerProviderSt
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(content: Text(e.message ?? 'Signup failed')),
         );
+        HapticFeedback.heavyImpact(); // Haptic feedback on sign-up failure
       } finally {
         setState(() => _isLoading = false);
       }
@@ -287,6 +290,7 @@ class _SignupScreenState extends State<SignupScreen> with SingleTickerProviderSt
                     const SizedBox(height: 16),
                     TextButton(
                       onPressed: () {
+                        HapticFeedback.lightImpact(); // Haptic feedback when navigating to login
                         Navigator.pushReplacement(
                           context,
                           MaterialPageRoute(builder: (context) => const LoginScreen()),

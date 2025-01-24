@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
+import 'package:flutter/services.dart'; // Import for HapticFeedback
 import 'package:provider/provider.dart';
 import '../widgets/chat/chat_message_list.dart';
 import '../widgets/chat/chat_input.dart';
@@ -44,6 +44,7 @@ class _ChatScreenState extends State<ChatScreen> with WidgetsBindingObserver {
   }
 
   void _toggleDrawer() {
+    HapticFeedback.lightImpact(); // Haptic feedback when toggling the drawer
     setState(() {
       _isDrawerOpen = !_isDrawerOpen;
       _drawerOffset = _isDrawerOpen ? 1.0 : 0.0;
@@ -83,7 +84,7 @@ class _ChatScreenState extends State<ChatScreen> with WidgetsBindingObserver {
 
   // Handle popup menu item selection
   void _onPopupMenuItemSelected(String value) {
-    HapticFeedback.lightImpact();
+    HapticFeedback.lightImpact(); // Haptic feedback when an item is selected
     switch (value) {
       case 'view_details':
         print('View Details selected');
@@ -153,7 +154,7 @@ class _ChatScreenState extends State<ChatScreen> with WidgetsBindingObserver {
                         size: 38,
                       ),
                       onPressed: () {
-                        HapticFeedback.lightImpact(); // Moved inside onPressed
+                        HapticFeedback.lightImpact(); // Haptic feedback when opening drawer
                         _toggleDrawer(); // Toggle drawer state
                       },
                     ),
@@ -165,7 +166,7 @@ class _ChatScreenState extends State<ChatScreen> with WidgetsBindingObserver {
                           color: Colors.white,
                         ),
                         onPressed: () {
-                          // Handle edit icon press
+                          HapticFeedback.lightImpact(); // Haptic feedback when edit icon is pressed
                           print('Edit icon pressed');
                         },
                       ),
@@ -174,7 +175,7 @@ class _ChatScreenState extends State<ChatScreen> with WidgetsBindingObserver {
                         key: _tripleDotKey, // Assign a key to the triple dots icon
                         borderRadius: BorderRadius.circular(20), // Ripple effect boundary
                         onTap: () {
-                          // Open the popup menu programmatically
+                          HapticFeedback.lightImpact(); // Haptic feedback when opening popup menu
                           _showCustomPopupMenu(context);
                         },
                         child: const Padding(
