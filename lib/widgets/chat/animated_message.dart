@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart'; // Import for Clipboard
+import 'package:flutter/services.dart'; // Import for Clipboard and HapticFeedback
 import 'package:provider/provider.dart'; // Import Provider
 import '../../../providers/chat_provider.dart'; // Import ChatProvider
 import '../../../utils/message_parser.dart';
@@ -8,17 +8,20 @@ class AnimatedMessage extends StatelessWidget {
   final String message;
   final bool isUser;
   final bool isFirstMessage;
-  final int messageIndex; // Add this parameter
+  final int messageIndex;
 
   const AnimatedMessage({
     super.key,
     required this.message,
     required this.isUser,
     required this.isFirstMessage,
-    required this.messageIndex, // Add this parameter
+    required this.messageIndex,
   });
 
   void _showMessageOptions(BuildContext context, Offset tapPosition) {
+    // Trigger haptic feedback
+    HapticFeedback.mediumImpact(); // Medium vibration
+
     final RenderBox renderBox = context.findRenderObject() as RenderBox;
     final messagePosition = renderBox.localToGlobal(Offset.zero);
 
@@ -179,6 +182,7 @@ class AnimatedMessage extends StatelessWidget {
           actions: [
             TextButton(
               onPressed: () {
+                HapticFeedback.lightImpact(); // Light vibration
                 Navigator.of(context).pop(); // Close the dialog
               },
               child: const Text(
@@ -188,6 +192,7 @@ class AnimatedMessage extends StatelessWidget {
             ),
             TextButton(
               onPressed: () {
+                HapticFeedback.mediumImpact(); // Medium vibration
                 final String editedMessage = _editController.text.trim();
                 if (editedMessage.isNotEmpty) {
                   // Update the message in the ChatProvider
@@ -214,11 +219,14 @@ class AnimatedMessage extends StatelessWidget {
     required VoidCallback onTap,
   }) {
     return Material(
-      color: Colors.transparent, // Ensure the Material widget is transparent
+      color: Colors.transparent,
       child: InkWell(
-        onTap: onTap, // Handle the tap event
+        onTap: () {
+          HapticFeedback.lightImpact(); // Light vibration
+          onTap(); // Call the provided onTap callback
+        },
         splashColor: Colors.grey.withOpacity(1),
-        borderRadius: BorderRadius.circular(8), // Ripple effect boundary
+        borderRadius: BorderRadius.circular(8),
         child: Padding(
           padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 16),
           child: Row(
@@ -263,30 +271,29 @@ class AnimatedMessage extends StatelessWidget {
             alignment: isUser ? Alignment.centerRight : Alignment.centerLeft,
             child: InkWell(
               onTap: () {
-                // Handle the tap event here
+                HapticFeedback.selectionClick(); // Light vibration for message tap
                 print("Message tapped: $message");
               },
               borderRadius: BorderRadius.circular(16), // Ripple effect boundary
-              splashColor: Colors.grey.withOpacity(1), // Ripple color
+              splashColor: Colors.grey.withOpacity(0.5), // Ripple color
               child: isUser
                   ? Container(
-                    padding: const EdgeInsets.fromLTRB(12, 16, 12, 0),
-                    decoration: BoxDecoration(
-                      color: const Color(0xA32C2929),
-                      borderRadius: BorderRadius.circular(16),
-                    ),
-                    child: MessageParser.parse(message, context),
-                  )
+                padding: const EdgeInsets.fromLTRB(12, 16, 12, 0),
+                decoration: BoxDecoration(
+                  color: const Color(0xFF141414),
+                  borderRadius: BorderRadius.circular(16),
+                ),
+                child: MessageParser.parse(message, context),
+              )
                   : Container(
-                    padding: const EdgeInsets.fromLTRB(12, 16, 12, 0),
-                    decoration: BoxDecoration(
-                      color: Colors.black87,
-                      borderRadius: BorderRadius.circular(16), // Match the borderRadius
-                    ),
-                    child: MessageParser.parse(message, context),
-                  ),
+                padding: const EdgeInsets.fromLTRB(12, 16, 12, 0),
+                decoration: BoxDecoration(
+                  color: Colors.black87,
+                  borderRadius: BorderRadius.circular(16), // Match the borderRadius
+                ),
+                child: MessageParser.parse(message, context),
+              ),
             ),
-
           ),
         ),
       ),

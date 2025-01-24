@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart'; // Import for HapticFeedback
 
 class ScrollToBottomButton extends StatelessWidget {
   final VoidCallback onPressed;
@@ -8,7 +9,10 @@ class ScrollToBottomButton extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
-      onTap: onPressed,
+      onTap: () {
+        HapticFeedback.lightImpact(); // Light vibration
+        onPressed();
+      },
       child: Container(
         width: 50,
         height: 50,

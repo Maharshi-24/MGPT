@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart'; // Import for HapticFeedback
 import 'package:provider/provider.dart';
 import '../../../providers/chat_provider.dart';
 
@@ -39,6 +40,13 @@ class ChatInput extends StatelessWidget {
                 fillColor: Colors.grey[850],
                 contentPadding: const EdgeInsets.symmetric(horizontal: 16),
               ),
+              onTap: () {
+                HapticFeedback.selectionClick(); // Light vibration for text field tap
+              },
+              onSubmitted: (value) {
+                HapticFeedback.lightImpact(); // Light vibration for text field submission
+                chatProvider.sendMessage();
+              },
             ),
           ),
           const SizedBox(width: 8),
@@ -49,6 +57,7 @@ class ChatInput extends StatelessWidget {
             ),
             child: IconButton(
               onPressed: () {
+                HapticFeedback.lightImpact(); // Light vibration for send button tap
                 chatProvider.sendMessage();
               },
               icon: const Icon(Icons.arrow_upward, color: Colors.black),

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 import '../widgets/chat/chat_message_list.dart';
 import '../widgets/chat/chat_input.dart';
@@ -82,6 +83,7 @@ class _ChatScreenState extends State<ChatScreen> with WidgetsBindingObserver {
 
   // Handle popup menu item selection
   void _onPopupMenuItemSelected(String value) {
+    HapticFeedback.lightImpact();
     switch (value) {
       case 'view_details':
         print('View Details selected');
@@ -150,7 +152,10 @@ class _ChatScreenState extends State<ChatScreen> with WidgetsBindingObserver {
                         color: Colors.white,
                         size: 38,
                       ),
-                      onPressed: _toggleDrawer, // Toggle drawer state
+                      onPressed: () {
+                        HapticFeedback.lightImpact(); // Moved inside onPressed
+                        _toggleDrawer(); // Toggle drawer state
+                      },
                     ),
                     actions: [
                       // Edit icon on the left of the triple dots
