@@ -195,10 +195,9 @@ class AnimatedMessage extends StatelessWidget {
                 HapticFeedback.mediumImpact(); // Medium vibration
                 final String editedMessage = _editController.text.trim();
                 if (editedMessage.isNotEmpty) {
-                  // Update the message in the ChatProvider
+                  // Use a Builder to ensure the correct context
                   final chatProvider = Provider.of<ChatProvider>(context, listen: false);
-                  print('Updating message at index $messageIndex'); // Debug print
-                  chatProvider.updateMessage(messageIndex, editedMessage);
+                  chatProvider.editMessage(messageIndex, editedMessage); // Use editMessage instead of updateMessage
                 }
                 Navigator.of(context).pop(); // Close the dialog
               },

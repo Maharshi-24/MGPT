@@ -40,12 +40,15 @@ class ChatInput extends StatelessWidget {
                 fillColor: Colors.grey[850],
                 contentPadding: const EdgeInsets.symmetric(horizontal: 16),
               ),
+              enabled: !chatProvider.isThinking, // Disable text field when thinking
               onTap: () {
                 HapticFeedback.selectionClick(); // Light vibration for text field tap
               },
               onSubmitted: (value) {
-                HapticFeedback.lightImpact(); // Light vibration for text field submission
-                chatProvider.sendMessage();
+                if (!chatProvider.isThinking) {
+                  HapticFeedback.lightImpact(); // Light vibration for text field submission
+                  chatProvider.sendMessage();
+                }
               },
             ),
           ),
@@ -57,8 +60,10 @@ class ChatInput extends StatelessWidget {
             ),
             child: IconButton(
               onPressed: () {
-                HapticFeedback.lightImpact(); // Light vibration for send button tap
-                chatProvider.sendMessage();
+                if (!chatProvider.isThinking) {
+                  HapticFeedback.lightImpact(); // Light vibration for send button tap
+                  chatProvider.sendMessage();
+                }
               },
               icon: const Icon(Icons.arrow_upward, color: Colors.black),
             ),
