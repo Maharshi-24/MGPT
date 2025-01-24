@@ -34,7 +34,8 @@ class ChatProvider with ChangeNotifier {
     textController.clear();
 
     try {
-      final request = http.Request('POST', Uri.parse('http://172.20.176.1:5000/api/chat'))
+      //final request = http.Request('POST', Uri.parse('https://maharshi-chat-backend.onrender.com/api/chat')) // Render
+      final request = http.Request('POST', Uri.parse('http://172.20.176.1:5000/api/chat')) // Hotspot
         ..headers['Content-Type'] = 'application/json'
     ..body = jsonEncode({'message': userMessage, 'userId': userId});
 
