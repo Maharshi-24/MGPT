@@ -1,9 +1,12 @@
 import 'package:flutter/material.dart';
+import 'package:firebase_core/firebase_core.dart';
 import 'package:provider/provider.dart';
-import 'screens/chat_screen.dart';
+import 'screens/auth_gate.dart';
 import 'providers/chat_provider.dart';
 
-void main() {
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  await Firebase.initializeApp();
   runApp(const MyApp());
 }
 
@@ -18,16 +21,10 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(
         primarySwatch: Colors.blue,
         scaffoldBackgroundColor: Colors.grey[50],
-        appBarTheme: const AppBarTheme(
-          elevation: 0,
-          centerTitle: true,
-          backgroundColor: Colors.white,
-          foregroundColor: Colors.black,
-        ),
       ),
       home: ChangeNotifierProvider(
         create: (_) => ChatProvider(),
-        child: const ChatScreen(),
+        child: const AuthGate(),
       ),
     );
   }

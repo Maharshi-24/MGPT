@@ -1,13 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
+import 'package:firebase_auth/firebase_auth.dart'; // Add this import
 
 class ChatProvider with ChangeNotifier {
   final TextEditingController textController = TextEditingController();
   final FocusNode focusNode = FocusNode();
   List<Map<String, dynamic>> messages = [];
   bool isThinking = false;
-  final String userId = 'uniqueUserId';
+
+  // Use Firebase user ID
+  String get userId => FirebaseAuth.instance.currentUser?.uid ?? 'defaultUser';
 
   // Add this method to update a message
   void updateMessage(int index, String newMessage) {

@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
-import 'drawer_header.dart'; // Import your custom drawer header
+import 'package:firebase_auth/firebase_auth.dart'; // Add this import
+import 'drawer_header.dart';
+import '../../screens/login_screen.dart'; // Import the LoginScreen
 
 class CustomDrawer extends StatefulWidget {
   const CustomDrawer({super.key});
@@ -9,10 +11,18 @@ class CustomDrawer extends StatefulWidget {
 }
 
 class _CustomDrawerState extends State<CustomDrawer> {
-  final FocusNode _searchFocusNode = FocusNode(); // FocusNode for the search bar
-  double _drawerWidth = 0.7; // Initial width of the drawer (70% of screen width)
-  double _maxStretch = 1.0; // Maximum stretch (100% of screen width)
-  double _currentDragOffset = 0.0; // Current drag offset
+  final FocusNode _searchFocusNode = FocusNode();
+  double _drawerWidth = 0.7;
+  double _maxStretch = 1.0;
+  double _currentDragOffset = 0.0;
+
+  Future<void> _logout(BuildContext context) async {
+    await FirebaseAuth.instance.signOut();
+    Navigator.pushReplacement(
+      context,
+      MaterialPageRoute(builder: (context) => const LoginScreen()),
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -20,40 +30,37 @@ class _CustomDrawerState extends State<CustomDrawer> {
 
     return GestureDetector(
       onTap: () {
-        // Unfocus the search bar when tapping outside
         _searchFocusNode.unfocus();
       },
       onHorizontalDragUpdate: (DragUpdateDetails details) {
-        // Calculate the drag offset
         setState(() {
           _currentDragOffset = details.primaryDelta! / screenWidth;
           _drawerWidth = (_drawerWidth + _currentDragOffset).clamp(0.7, _maxStretch);
         });
       },
       onHorizontalDragEnd: (DragEndDetails details) {
-        // Snap the drawer back to its original width when the drag ends
         setState(() {
-          _drawerWidth = 0.7; // Reset to 70% of screen width
-          _currentDragOffset = 0.0; // Reset drag offset
+          _drawerWidth = 0.7;
+          _currentDragOffset = 0.0;
         });
       },
       child: AnimatedContainer(
-        duration: const Duration(milliseconds: 200), // Smooth animation
-        width: screenWidth * _drawerWidth, // Dynamic width based on drag
+        duration: const Duration(milliseconds: 200),
+        width: screenWidth * _drawerWidth,
         child: ClipPath(
-          clipper: _DrawerClipper(), // Custom clipper for pointy edges
+          clipper: _DrawerClipper(),
           child: Container(
             color: const Color(0xFF0C0C0C),
             child: Column(
               children: [
-                const CustomDrawerHeader(), // Use the renamed widget here
+                const CustomDrawerHeader(),
                 Padding(
                   padding: const EdgeInsets.all(16.0),
                   child: Row(
                     children: [
                       Expanded(
                         child: TextField(
-                          focusNode: _searchFocusNode, // Assign the FocusNode to the search bar
+                          focusNode: _searchFocusNode,
                           decoration: InputDecoration(
                             hintText: 'Search',
                             hintStyle: const TextStyle(color: Colors.white),
@@ -69,7 +76,7 @@ class _CustomDrawerState extends State<CustomDrawer> {
                           style: const TextStyle(color: Colors.white),
                         ),
                       ),
-                      const SizedBox(width: 8), // Add some space between the search bar and the icon
+                      const SizedBox(width: 8),
                       IconButton(
                         icon: const Icon(Icons.drive_file_rename_outline, color: Colors.white),
                         onPressed: () {
@@ -79,16 +86,14 @@ class _CustomDrawerState extends State<CustomDrawer> {
                     ],
                   ),
                 ),
-                // Add a divider line between the search bar and "Chats"
                 const Divider(
-                  color: Colors.grey, // Color of the divider line
-                  height: 1, // Height of the divider line
-                  thickness: 1, // Thickness of the divider line
-                  indent: 16, // Left padding for the divider
-                  endIndent: 16, // Right padding for the divider
+                  color: Colors.grey,
+                  height: 1,
+                  thickness: 1,
+                  indent: 16,
+                  endIndent: 16,
                 ),
-                const SizedBox(height: 16), // Add space below the divider
-                // Add the "Chats" heading below the search bar
+                const SizedBox(height: 16),
                 const Padding(
                   padding: EdgeInsets.symmetric(horizontal: 16.0),
                   child: Align(
@@ -107,15 +112,7 @@ class _CustomDrawerState extends State<CustomDrawer> {
                   child: ListView(
                     padding: EdgeInsets.zero,
                     children: const [
-                      // Placeholder for chat history (will be populated later)
-                      // Example:
-                      // ListTile(
-                      //   leading: Icon(Icons.chat, color: Colors.white),
-                      //   title: Text('Chat 1', style: TextStyle(color: Colors.white)),
-                      //   onTap: () {
-                      //     // Navigate to the selected chat
-                      //   },
-                      // ),
+                      // Placeholder for chat history
                     ],
                   ),
                 ),
@@ -153,6 +150,10 @@ class _CustomDrawerState extends State<CustomDrawer> {
                           ],
                         ),
                       ),
+                      IconButton(
+                        icon: const Icon(Icons.logout, color: Colors.white),
+                        onPressed: () => _logout(context),
+                      ),
                     ],
                   ),
                 ),
@@ -165,17 +166,16 @@ class _CustomDrawerState extends State<CustomDrawer> {
   }
 }
 
-// Custom clipper to make the right edges of the drawer pointy
 class _DrawerClipper extends CustomClipper<Path> {
   @override
   Path getClip(Size size) {
     final path = Path();
-    path.moveTo(0, 0); // Start at the top-left corner
-    path.lineTo(size.width + 20, 0); // Move to the top-right corner (minus 20 for the pointy edge)
-    path.lineTo(size.width, 20); // Create a diagonal line for the pointy edge
-    path.lineTo(size.width, size.height + 20); // Move to the bottom-right corner (minus 20 for the pointy edge)
-    path.lineTo(0, size.height); // Move to the bottom-left corner
-    path.close(); // Close the path
+    path.moveTo(0, 0);
+    path.lineTo(size.width + 20, 0);
+    path.lineTo(size.width, 20);
+    path.lineTo(size.width, size.height + 20);
+    path.lineTo(0, size.height);
+    path.close();
     return path;
   }
 
