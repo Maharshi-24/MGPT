@@ -17,11 +17,16 @@ class _CustomDrawerState extends State<CustomDrawer> {
   double _currentDragOffset = 0.0;
 
   Future<void> _logout(BuildContext context) async {
-    await FirebaseAuth.instance.signOut();
-    Navigator.pushReplacement(
-      context,
-      MaterialPageRoute(builder: (context) => const LoginScreen()),
-    );
+    try {
+      await FirebaseAuth.instance.signOut();
+      print('Logout successful!'); // Debug log
+      // No need to navigate manually; AuthGate will handle it
+    } catch (e) {
+      print('Logout failed: $e'); // Debug log
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Logout failed: $e')),
+      );
+    }
   }
 
   @override

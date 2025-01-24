@@ -19,11 +19,11 @@ class _LoginScreenState extends State<LoginScreen> {
     if (_formKey.currentState!.validate()) {
       setState(() => _isLoading = true);
       try {
-        await FirebaseAuth.instance.signInWithEmailAndPassword(
+        final userCredential = await FirebaseAuth.instance.signInWithEmailAndPassword(
           email: _emailController.text.trim(),
           password: _passwordController.text.trim(),
         );
-        print('Login successful!');
+        print('Login successful! User: ${userCredential.user?.email}');
       } on FirebaseAuthException catch (e) {
         print('Login failed: ${e.message}');
         ScaffoldMessenger.of(context).showSnackBar(
