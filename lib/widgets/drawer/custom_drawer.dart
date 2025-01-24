@@ -32,6 +32,8 @@ class _CustomDrawerState extends State<CustomDrawer> {
   @override
   Widget build(BuildContext context) {
     final screenWidth = MediaQuery.of(context).size.width;
+    final User? user = FirebaseAuth.instance.currentUser; // Get the current user
+    final String userEmail = user?.email ?? 'user@example.com'; // Use the user's email or a fallback
 
     return GestureDetector(
       onTap: () {
@@ -146,7 +148,7 @@ class _CustomDrawerState extends State<CustomDrawer> {
                               ),
                             ),
                             Text(
-                              'user@example.com',
+                              userEmail, // Use the user's email here
                               style: TextStyle(
                                 color: Colors.white,
                                 fontSize: 12,
