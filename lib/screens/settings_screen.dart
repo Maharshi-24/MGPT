@@ -80,14 +80,14 @@ class _SettingsScreenState extends State<SettingsScreen> {
               ],
             ),
           ),
-          _buildListTile(Icons.email, 'Email', subtitle: _userEmail),
-          _buildListTile(Icons.phone, 'Phone number', subtitle: _userPhone),
-          _buildListTile(Icons.palette, 'Customize'),
+          _buildListTile(Icons.email_outlined, 'Email', subtitle: _userEmail),
+          _buildListTile(Icons.phone_outlined, 'Phone number', subtitle: _userPhone),
+          _buildListTile(Icons.palette_outlined, 'Customize'),
           _buildListTile(Icons.security, 'Data Controls'),
           _buildListTile(Icons.mic, 'Voice'),
-          _buildListTile(Icons.info, 'About'),
+          _buildListTile(Icons.info_outline, 'About'),
           ListTile(
-            leading: Icon(Icons.exit_to_app, color: Colors.red),
+            leading: Icon(Icons.logout, color: Colors.red),
             title: Text('Sign out', style: TextStyle(color: Colors.red)),
             onTap: () async {
               await _auth.signOut();
