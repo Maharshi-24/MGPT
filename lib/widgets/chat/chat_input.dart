@@ -19,7 +19,7 @@ class _ChatInputState extends State<ChatInput> {
     final chatProvider = Provider.of<ChatProvider>(context);
 
     return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 12),
       decoration: BoxDecoration(
         color: Colors.black,
         boxShadow: [
@@ -35,7 +35,6 @@ class _ChatInputState extends State<ChatInput> {
         children: [
           Row(
             children: [
-              // Show the plus button when icons are hidden
               // Show the plus button when icons are hidden
               if (!isIconsVisible)
                 Container(
@@ -57,28 +56,34 @@ class _ChatInputState extends State<ChatInput> {
                   ),
                 ),
 
-
-              const SizedBox(width: 8),
-
               // Show icons when they are visible and text field is not expanded
               if (isIconsVisible && !isExpanded)
                 Row(
+                  mainAxisSize: MainAxisSize.values[0], // Reduce the space between icons
                   children: [
                     IconButton(
                       onPressed: () {},
-                      icon: const Icon(Icons.camera_alt_outlined, color: Colors.white),
+                      icon: const Icon(
+                        Icons.image_outlined,
+                        color: Colors.white,
+                        size: 25, // Reduce the size of the icon
+                      ),
                     ),
                     IconButton(
                       onPressed: () {},
-                      icon: const Icon(Icons.image_outlined, color: Colors.white),
+                      icon: const Icon(
+                        Icons.folder_outlined,
+                        color: Colors.white,
+                        size: 25, // Reduce the size of the icon
+                      ),
                     ),
                     IconButton(
                       onPressed: () {},
-                      icon: const Icon(Icons.folder_outlined, color: Colors.white),
-                    ),
-                    IconButton(
-                      onPressed: () {},
-                      icon: const Icon(Icons.cloud_queue_outlined, color: Colors.white),
+                      icon: const Icon(
+                        Icons.cloud_queue_outlined,
+                        color: Colors.white,
+                        size: 25, // Reduce the size of the icon
+                      ),
                     ),
                   ],
                 ),
