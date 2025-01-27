@@ -6,7 +6,7 @@ import 'animated_message.dart';
 import 'thinking_indicator.dart';
 
 class ChatMessageList extends StatefulWidget {
-  final ScrollController scrollController; // Accept ScrollController from parent
+  final ScrollController scrollController;
 
   const ChatMessageList({super.key, required this.scrollController});
 
