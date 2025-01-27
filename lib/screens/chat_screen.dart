@@ -145,7 +145,7 @@ class _ChatScreenState extends State<ChatScreen> with WidgetsBindingObserver {
                         style: TextStyle(color: Colors.white),
                       ),
                     ),
-                    backgroundColor: Colors.black87,
+                    backgroundColor: Colors.black,
                     elevation: 0,
                     leading: IconButton(
                       icon: const Icon(
