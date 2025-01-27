@@ -109,6 +109,7 @@ class MessageParser {
     }
 
     return RichText(
+      textAlign: TextAlign.justify, // Add this line to justify the text
       text: TextSpan(
         style: const TextStyle(fontSize: 16, color: Colors.white),
         children: spans,
