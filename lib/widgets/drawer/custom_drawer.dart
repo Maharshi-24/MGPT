@@ -1,10 +1,11 @@
 import 'package:flutter/material.dart';
-import 'package:firebase_auth/firebase_auth.dart'; // Add this import
+import 'package:firebase_auth/firebase_auth.dart';
+import '../../screens/settings_screen.dart';
+import '../../utils/custom_page_route.dart';
 import 'drawer_header.dart';
-import '../../screens/login_screen.dart'; // Import the LoginScreen
 
 class CustomDrawer extends StatefulWidget {
-  const CustomDrawer({super.key});
+  const CustomDrawer({Key? key}) : super(key: key);
 
   @override
   _CustomDrawerState createState() => _CustomDrawerState();
@@ -19,21 +20,28 @@ class _CustomDrawerState extends State<CustomDrawer> {
   Future<void> _logout(BuildContext context) async {
     try {
       await FirebaseAuth.instance.signOut();
-      print('Logout successful!'); // Debug log
+      print('Logout successful!');
       // No need to navigate manually; AuthGate will handle it
     } catch (e) {
-      print('Logout failed: $e'); // Debug log
+      print('Logout failed: $e');
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text('Logout failed: $e')),
       );
     }
   }
 
+  void _openSettingsPage(BuildContext context) {
+    Navigator.push(
+      context,
+      PushPageRoute(page: SettingsScreen()),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     final screenWidth = MediaQuery.of(context).size.width;
-    final User? user = FirebaseAuth.instance.currentUser; // Get the current user
-    final String userEmail = user?.email ?? 'user@example.com'; // Use the user's email or a fallback
+    final User? user = FirebaseAuth.instance.currentUser;
+    final String userEmail = user?.email ?? 'user@example.com';
 
     return GestureDetector(
       onTap: () {
@@ -123,45 +131,48 @@ class _CustomDrawerState extends State<CustomDrawer> {
                     ],
                   ),
                 ),
-                Container(
-                  padding: const EdgeInsets.all(16),
-                  decoration: const BoxDecoration(
-                    color: Color(0xFF0C0C0C),
-                  ),
-                  child: Row(
-                    children: [
-                      const CircleAvatar(
-                        radius: 20,
-                        backgroundColor: Color(0xFF0C0C0C),
-                        child: Icon(Icons.person, color: Colors.white),
-                      ),
-                      const SizedBox(width: 10),
-                      Expanded(
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            const Text(
-                              'User Name',
-                              style: TextStyle(
-                                color: Colors.white,
-                                fontWeight: FontWeight.bold,
-                              ),
-                            ),
-                            Text(
-                              userEmail, // Use the user's email here
-                              style: TextStyle(
-                                color: Colors.white,
-                                fontSize: 12,
-                              ),
-                            ),
-                          ],
+                GestureDetector(
+                  onTap: () => _openSettingsPage(context),
+                  child: Container(
+                    padding: const EdgeInsets.all(16),
+                    decoration: const BoxDecoration(
+                      color: Color(0xFF0C0C0C),
+                    ),
+                    child: Row(
+                      children: [
+                        const CircleAvatar(
+                          radius: 20,
+                          backgroundColor: Color(0xFF0C0C0C),
+                          child: Icon(Icons.person, color: Colors.white),
                         ),
-                      ),
-                      IconButton(
-                        icon: const Icon(Icons.logout, color: Colors.white),
-                        onPressed: () => _logout(context),
-                      ),
-                    ],
+                        const SizedBox(width: 10),
+                        Expanded(
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              const Text(
+                                'User Name',
+                                style: TextStyle(
+                                  color: Colors.white,
+                                  fontWeight: FontWeight.bold,
+                                ),
+                              ),
+                              Text(
+                                userEmail,
+                                style: const TextStyle(
+                                  color: Colors.white,
+                                  fontSize: 12,
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                        IconButton(
+                          icon: const Icon(Icons.logout, color: Colors.white),
+                          onPressed: () => _logout(context),
+                        ),
+                      ],
+                    ),
                   ),
                 ),
               ],
@@ -189,3 +200,4 @@ class _DrawerClipper extends CustomClipper<Path> {
   @override
   bool shouldReclip(covariant CustomClipper<Path> oldClipper) => false;
 }
+
