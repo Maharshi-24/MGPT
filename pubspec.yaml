@@ -21,6 +21,14 @@ dev_dependencies:
   flutter_test:
     sdk: flutter
   flutter_lints: ^2.0.0 # For linting and code analysis
+  flutter_native_splash: ^2.2.19
+
+flutter_native_splash:
+  color: "#000000"  # Black background
+  android: true
+  ios: true
+  web: true
+  fullscreen: true  # Optional: Set to true if you want a fullscreen splash
 
 flutter:
   uses-material-design: true
