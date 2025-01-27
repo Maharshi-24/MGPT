@@ -15,6 +15,7 @@ class _SignupScreenState extends State<SignupScreen> with SingleTickerProviderSt
   final _passwordController = TextEditingController();
   final _formKey = GlobalKey<FormState>();
   bool _isLoading = false;
+  bool _isPasswordVisible = false; // Add this state variable
 
   late AnimationController _controller;
   final List<Color> _backgroundColors = [
@@ -46,7 +47,7 @@ class _SignupScreenState extends State<SignupScreen> with SingleTickerProviderSt
   bool _isTyping = true;
 
   // Animation speed (milliseconds per letter)
-  final int _typingSpeed = 100; // Adjust this value to control typing speed
+  final int _typingSpeed = 50; // Adjust this value to control typing speed
   final int _deletingSpeed = 50; // Adjust this value to control deleting speed
 
   // Padding for the text and circle
@@ -245,7 +246,7 @@ class _SignupScreenState extends State<SignupScreen> with SingleTickerProviderSt
                     TextFormField(
                       controller: _passwordController,
                       style: const TextStyle(color: Colors.white),
-                      obscureText: true,
+                      obscureText: !_isPasswordVisible, // Toggle visibility
                       decoration: InputDecoration(
                         labelText: 'Password',
                         labelStyle: const TextStyle(color: Colors.grey),
@@ -256,6 +257,17 @@ class _SignupScreenState extends State<SignupScreen> with SingleTickerProviderSt
                         focusedBorder: OutlineInputBorder(
                           borderSide: const BorderSide(color: Colors.blue),
                           borderRadius: BorderRadius.circular(8),
+                        ),
+                        suffixIcon: IconButton(
+                          icon: Icon(
+                            _isPasswordVisible ? Icons.visibility : Icons.visibility_off,
+                            color: Colors.grey,
+                          ),
+                          onPressed: () {
+                            setState(() {
+                              _isPasswordVisible = !_isPasswordVisible; // Toggle visibility
+                            });
+                          },
                         ),
                       ),
                       validator: (value) => value!.isEmpty ? 'Enter password' : null,
