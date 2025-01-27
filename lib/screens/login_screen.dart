@@ -18,18 +18,18 @@ class _LoginScreenState extends State<LoginScreen> with SingleTickerProviderStat
 
   late AnimationController _controller;
   final List<Color> _backgroundColors = [
-    Colors.blue,
-    Colors.purple,
-    Colors.green,
-    Colors.orange,
-    Colors.red,
+    Colors.deepPurple,
+    Colors.indigo,
+    Colors.teal,
+    Colors.blueGrey,
+    Colors.deepOrange,
   ];
   final List<Color> _textColors = [
     Colors.white,
-    Colors.yellow,
-    Colors.cyan,
-    Colors.pink,
-    Colors.lime,
+    Colors.amberAccent,
+    Colors.lightGreenAccent,
+    Colors.pinkAccent,
+    Colors.cyanAccent,
   ];
   int _currentColorIndex = 0;
 
