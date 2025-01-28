@@ -151,7 +151,11 @@ class _ChatInputState extends State<ChatInput> {
               // Send/Stop Button
               Container(
                 decoration: BoxDecoration(
-                  color: chatProvider.isStreaming ? Colors.red : Colors.white,
+                  color: chatProvider.isStreaming ? Colors.white : Colors.white,
+                  border: Border.all(
+                    color: chatProvider.isStreaming ? Colors.black : Colors.transparent, // Black border for Stop
+                    width: 2,
+                  ),
                   borderRadius: BorderRadius.circular(24),
                 ),
                 child: IconButton(
@@ -164,10 +168,11 @@ class _ChatInputState extends State<ChatInput> {
                   },
                   icon: Icon(
                     chatProvider.isStreaming ? Icons.stop : Icons.arrow_upward,
-                    color: chatProvider.isStreaming ? Colors.white : Colors.black,
+                    color: chatProvider.isStreaming ? Colors.black : Colors.black,
                   ),
                 ),
               ),
+
             ],
           ),
         ],
