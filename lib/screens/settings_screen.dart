@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'changelog_screen.dart';
 
 class SettingsScreen extends StatefulWidget {
   const SettingsScreen({Key? key}) : super(key: key);
@@ -86,6 +87,25 @@ class _SettingsScreenState extends State<SettingsScreen> {
           _buildListTile(Icons.security, 'Data Controls'),
           _buildListTile(Icons.mic, 'Voice'),
           _buildListTile(Icons.info_outline, 'About'),
+          ListTile(
+            leading: Icon(Icons.new_releases, color: Colors.white),
+            title: Text("What's New", style: TextStyle(color: Colors.white)),
+            onTap: () {
+              Navigator.of(context).push(PageRouteBuilder(
+                pageBuilder: (context, animation, secondaryAnimation) => ChangelogScreen(onDone: () {  }),
+                transitionsBuilder: (context, animation, secondaryAnimation, child) {
+                  const begin = Offset(1.0, 0.0); // Slide from the right
+                  const end = Offset.zero;
+                  const curve = Curves.easeInOut;
+
+                  var tween = Tween(begin: begin, end: end).chain(CurveTween(curve: curve));
+                  var offsetAnimation = animation.drive(tween);
+
+                  return SlideTransition(position: offsetAnimation, child: child);
+                },
+              ));
+            },
+          ),
           ListTile(
             leading: Icon(Icons.logout, color: Colors.red),
             title: Text('Sign out', style: TextStyle(color: Colors.red)),
