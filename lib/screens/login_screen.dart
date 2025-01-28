@@ -35,11 +35,11 @@ class _LoginScreenState extends State<LoginScreen> with SingleTickerProviderStat
   int _currentColorIndex = 0;
 
   final List<String> _streamTexts = [
-    'Start something new...',
-    'Explore the possibilities...',
-    'Unlock your potential...',
-    'Let’s create something amazing...',
-    'Innovate and inspire...',
+    'Start something new',
+    'Explore the possibilities',
+    'Unlock your potential',
+    'Create something amazing',
+    'Innovate and inspire',
   ];
   int _currentTextIndex = 0;
   String _displayText = '';
