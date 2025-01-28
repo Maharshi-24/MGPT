@@ -148,22 +148,23 @@ class _ChatInputState extends State<ChatInput> {
 
               const SizedBox(width: 8),
 
-              // Send Button
+              // Send/Stop Button
               Container(
                 decoration: BoxDecoration(
-                  color: Colors.white,
+                  color: chatProvider.isStreaming ? Colors.red : Colors.white,
                   borderRadius: BorderRadius.circular(24),
                 ),
                 child: IconButton(
                   onPressed: () {
-                    if (!chatProvider.isThinking) {
-                      HapticFeedback.lightImpact(); // Light vibration for send button tap
-                      chatProvider.sendMessage();
+                    if (chatProvider.isStreaming) {
+                      chatProvider.stopResponse(); // Trigger stop
+                    } else {
+                      chatProvider.sendMessage(); // Trigger send
                     }
                   },
-                  icon: const Icon(
-                    Icons.arrow_upward,
-                    color: Colors.black,
+                  icon: Icon(
+                    chatProvider.isStreaming ? Icons.stop : Icons.arrow_upward,
+                    color: chatProvider.isStreaming ? Colors.white : Colors.black,
                   ),
                 ),
               ),
