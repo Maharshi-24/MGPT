@@ -2,12 +2,12 @@ import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:maharshi_chat/screens/splash_screen.dart';
 import 'package:provider/provider.dart';
-import 'screens/auth_gate.dart'; // Import your AuthGate or main screen
-import 'providers/chat_provider.dart'; // Import your ChatProvider
+import 'screens/auth_gate.dart';
+import 'providers/chat_provider.dart';
 
 void main() async {
-  WidgetsFlutterBinding.ensureInitialized(); // Ensure Flutter binding is initialized
-  await Firebase.initializeApp(); // Initialize Firebase
+  WidgetsFlutterBinding.ensureInitialized();
+  await Firebase.initializeApp();
   runApp(const MyApp());
 }
 
@@ -22,8 +22,16 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(
         primarySwatch: Colors.blue,
         scaffoldBackgroundColor: Colors.grey[50],
+        textTheme: TextTheme(
+          bodyLarge: TextStyle(fontFamily: 'VT323'),
+          bodyMedium: TextStyle(fontFamily: 'VT323'),
+          bodySmall: TextStyle(fontFamily: 'VT323'),
+          titleLarge: TextStyle(fontFamily: 'VT323'),
+          titleMedium: TextStyle(fontFamily: 'VT323'),
+          titleSmall: TextStyle(fontFamily: 'VT323'),
+        ),
       ),
-      home: const SplashScreenWrapper(), // Start with the splash screen
+      home: const SplashScreenWrapper(),
     );
   }
 }
@@ -39,14 +47,12 @@ class _SplashScreenWrapperState extends State<SplashScreenWrapper> {
   @override
   void initState() {
     super.initState();
-
-    // Navigate to the main app screen after 3 seconds
     Future.delayed(const Duration(seconds: 3), () {
       Navigator.of(context).pushReplacement(
         MaterialPageRoute(
           builder: (context) => ChangeNotifierProvider(
             create: (_) => ChatProvider(),
-            child: const AuthGate(), // Replace with your main screen
+            child: const AuthGate(),
           ),
         ),
       );
@@ -55,6 +61,6 @@ class _SplashScreenWrapperState extends State<SplashScreenWrapper> {
 
   @override
   Widget build(BuildContext context) {
-    return const SplashScreen(); // Show the custom splash screen
+    return const SplashScreen();
   }
 }
