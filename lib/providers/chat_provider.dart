@@ -101,7 +101,7 @@ class ChatProvider with ChangeNotifier {
     notifyListeners();
 
     try {
-      final request = http.Request('POST', Uri.parse('http://192.168.168.46:5000/api/stop'))
+      final request = http.Request('POST', Uri.parse('https://maharshi-chat-backend.onrender.com/api/stop'))
         ..headers['Content-Type'] = 'application/json'
         ..body = jsonEncode({'userId': userId});
 
