@@ -16,37 +16,37 @@ class MessageParser {
         final lineLength = screenWidth * 0.8;
         spans.add(TextSpan(
           text: '${'─' * (lineLength ~/ 10.3)}\n',
-          style: const TextStyle(color: Colors.grey),
+          style: const TextStyle(color: Colors.grey, fontFamily: 'VT323'),
         ));
       } else if (line.startsWith('### ')) {
         spans.add(TextSpan(
           text: '${line.substring(4)}\n',
-          style: const TextStyle(fontSize: 20, fontWeight: FontWeight.bold, color: Colors.white),
+          style: const TextStyle(fontSize: 24, fontWeight: FontWeight.bold, color: Colors.white, fontFamily: 'VT323'),
         ));
       } else if (line.startsWith('## ')) {
         spans.add(TextSpan(
           text: '${line.substring(3)}\n',
-          style: const TextStyle(fontSize: 24, fontWeight: FontWeight.bold, color: Colors.white),
+          style: const TextStyle(fontSize: 28, fontWeight: FontWeight.bold, color: Colors.white, fontFamily: 'VT323'),
         ));
       } else if (line.startsWith('# ')) {
         spans.add(TextSpan(
           text: '${line.substring(2)}\n',
-          style: const TextStyle(fontSize: 28, fontWeight: FontWeight.bold, color: Colors.white),
+          style: const TextStyle(fontSize: 32, fontWeight: FontWeight.bold, color: Colors.white, fontFamily: 'VT323'),
         ));
       } else if (line.startsWith('> ')) {
         spans.add(TextSpan(
           text: line.substring(2) + '\n',
-          style: const TextStyle(fontStyle: FontStyle.italic, color: Colors.grey),
+          style: const TextStyle(fontStyle: FontStyle.italic, color: Colors.grey, fontFamily: 'VT323'),
         ));
       } else if (line.startsWith('- ') || line.startsWith('* ') || line.startsWith('+ ')) {
         spans.add(TextSpan(
           text: '• ${line.substring(2)}\n',
-          style: const TextStyle(fontSize: 16, color: Colors.white),
+          style: const TextStyle(fontSize: 20, color: Colors.white, fontFamily: 'VT323'),
         ));
       } else if (line.startsWith(RegExp(r'\d+\. '))) {
         spans.add(TextSpan(
           text: '$line\n',
-          style: const TextStyle(fontSize: 16, color: Colors.white),
+          style: const TextStyle(fontSize: 20, color: Colors.white, fontFamily: 'VT323'),
         ));
       } else {
         final regex = RegExp(r'\*\*(.*?)\*\*|__(.*?)__|\*(.*?)\*|_(.*?)_|~~(.*?)~~|\+\+(.*?)\+\+|`(.*?)`');
@@ -57,7 +57,7 @@ class MessageParser {
           if (match.start > currentIndex) {
             spans.add(TextSpan(
               text: line.substring(currentIndex, match.start),
-              style: const TextStyle(color: Colors.white),
+              style: const TextStyle(color: Colors.white, fontFamily: 'VT323'),
             ));
           }
 
@@ -70,22 +70,22 @@ class MessageParser {
           if (boldText != null) {
             spans.add(TextSpan(
               text: boldText,
-              style: const TextStyle(fontWeight: FontWeight.bold, color: Colors.white),
+              style: const TextStyle(fontWeight: FontWeight.bold, color: Colors.white, fontFamily: 'VT323'),
             ));
           } else if (italicText != null) {
             spans.add(TextSpan(
               text: italicText,
-              style: const TextStyle(fontStyle: FontStyle.italic, color: Colors.white),
+              style: const TextStyle(fontStyle: FontStyle.italic, color: Colors.white, fontFamily: 'VT323'),
             ));
           } else if (strikethroughText != null) {
             spans.add(TextSpan(
               text: strikethroughText,
-              style: const TextStyle(decoration: TextDecoration.lineThrough, color: Colors.white),
+              style: const TextStyle(decoration: TextDecoration.lineThrough, color: Colors.white, fontFamily: 'VT323'),
             ));
           } else if (underlineText != null) {
             spans.add(TextSpan(
               text: underlineText,
-              style: const TextStyle(decoration: TextDecoration.underline, color: Colors.white),
+              style: const TextStyle(decoration: TextDecoration.underline, color: Colors.white, fontFamily: 'VT323'),
             ));
           } else if (codeText != null) {
             spans.add(TextSpan(
@@ -100,7 +100,7 @@ class MessageParser {
         if (currentIndex < line.length) {
           spans.add(TextSpan(
             text: line.substring(currentIndex),
-            style: const TextStyle(color: Colors.white),
+            style: const TextStyle(color: Colors.white, fontFamily: 'VT323'),
           ));
         }
 
@@ -109,9 +109,9 @@ class MessageParser {
     }
 
     return RichText(
-      textAlign: TextAlign.justify, // Add this line to justify the text
+      textAlign: TextAlign.justify,
       text: TextSpan(
-        style: const TextStyle(fontSize: 16, color: Colors.white),
+        style: const TextStyle(fontSize: 20, color: Colors.white, fontFamily: 'VT323'),
         children: spans,
       ),
     );
