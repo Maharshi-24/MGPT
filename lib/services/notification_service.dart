@@ -94,7 +94,7 @@ class NotificationService {
       'Eggs are the best🥚😋',
       const NotificationDetails(
         android: AndroidNotificationDetails(
-          'instant_notification_channel', // Ensure this matches the created channel
+          'instant_notification_channel',
           'Instant Notifications',
           channelDescription: 'Channel for instant notifications',
           importance: Importance.max,
@@ -113,19 +113,19 @@ class NotificationService {
   Future<void> scheduleDailyNotification() async {
     print("🕒 Scheduling daily notification...");
 
-    tz.TZDateTime scheduledTime = _nextInstanceOfTime(11, 55);
+    tz.TZDateTime scheduledTime = _nextInstanceOfTime(12, 25);
     print("📅 Scheduled time: $scheduledTime");
 
     await flutterLocalNotificationsPlugin.zonedSchedule(
       0,
-      'Daily Reminder',
-      'Don\'t forget to use the app today!',
+      'Scheduled Notification',
+      'It\'s time for your notification!',
       scheduledTime,
       const NotificationDetails(
         android: AndroidNotificationDetails(
-          'daily_notification_channel',
-          'Daily Notifications',
-          channelDescription: 'Channel for daily reminders',
+          'periodic_notification_channel',
+          'Periodic Notifications',
+          channelDescription: 'Channel for periodic notifications',
           importance: Importance.max,
           priority: Priority.high,
           enableLights: true,
@@ -141,16 +141,18 @@ class NotificationService {
     print("✅ Daily notification scheduled!");
   }
 
-
   /// Schedule a periodic notification (e.g., every 3 hours)
   Future<void> schedulePeriodicNotifications() async {
     print("⏳ Scheduling periodic notifications...");
+
+    tz.TZDateTime scheduledTime = _nextInstanceOfTime(DateTime.now().hour , DateTime.now().minute);
+    print("📅 Next 3-hour interval: $scheduledTime");
 
     await flutterLocalNotificationsPlugin.zonedSchedule(
       1,
       'Did you know?',
       'Here\'s a fun fact: MGPT is awesome!',
-      _nextInstanceOfTime(DateTime.now().hour + 3, DateTime.now().minute), // Next 3-hour interval
+      scheduledTime,
       const NotificationDetails(
         android: AndroidNotificationDetails(
           'periodic_notification_channel',
@@ -188,5 +190,4 @@ class NotificationService {
 
     return scheduledDate;
   }
-
 }
