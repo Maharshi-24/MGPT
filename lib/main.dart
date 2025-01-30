@@ -12,7 +12,7 @@ void main() async {
 
   runApp(const MyApp()); // Run the app first
 
-  // Now initialize notifications asynchronously
+  // Initialize notifications
   final notificationService = NotificationService();
   await notificationService.init();
   await notificationService.scheduleDailyNotification();

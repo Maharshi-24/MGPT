@@ -1,6 +1,7 @@
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
-import 'package:timezone/data/latest.dart' as tz;
+import 'package:flutter_timezone/flutter_timezone.dart';
 import 'package:timezone/timezone.dart' as tz;
+import 'package:timezone/data/latest.dart' as tz;
 import 'package:permission_handler/permission_handler.dart';
 
 class NotificationService {
@@ -26,14 +27,22 @@ class NotificationService {
 
     await flutterLocalNotificationsPlugin.initialize(initializationSettings);
 
-    // 🔥 Request notification permissions (Android 13+)
+    // Initialize timezones
+    await _configureLocalTimeZone();
+
+    // Request notification permissions
     await _requestPermissions();
 
-    // Ensure timezone is initialized
-    tz.initializeTimeZones();
-
-    // 🔥 Ensure the notification channel exists
+    // Create notification channels
     await _createNotificationChannels();
+  }
+
+  /// Configure local timezone using flutter_timezone
+  Future<void> _configureLocalTimeZone() async {
+    tz.initializeTimeZones();
+    final String timeZoneName = await FlutterTimezone.getLocalTimezone();
+    tz.setLocalLocation(tz.getLocation(timeZoneName));
+    print("✅ Timezone configured: $timeZoneName");
   }
 
   /// Request notification permissions for Android 13+ and iOS
@@ -88,52 +97,57 @@ class NotificationService {
   Future<void> showInstantNotification() async {
     print("🔔 Attempting to show instant notification...");
 
+    const AndroidNotificationDetails androidNotificationDetails =
+    AndroidNotificationDetails(
+      'instant_notification_channel',
+      'Instant Notifications',
+      channelDescription: 'Channel for instant notifications',
+      importance: Importance.max,
+      priority: Priority.high,
+      ticker: 'ticker',
+    );
+
+    const NotificationDetails notificationDetails =
+    NotificationDetails(android: androidNotificationDetails);
+
     await flutterLocalNotificationsPlugin.show(
       2,
       'You know...',
       'Eggs are the best🥚😋',
-      const NotificationDetails(
-        android: AndroidNotificationDetails(
-          'instant_notification_channel',
-          'Instant Notifications',
-          channelDescription: 'Channel for instant notifications',
-          importance: Importance.max,
-          priority: Priority.high,
-          enableLights: true,
-          enableVibration: true,
-        ),
-        iOS: DarwinNotificationDetails(),
-      ),
+      notificationDetails,
     );
 
     print("✅ Notification should be displayed!");
   }
 
-  /// Schedule a daily notification at a fixed time
+  /// Schedule a daily notification at a fixed time (e.g., 1:05 PM)
   Future<void> scheduleDailyNotification() async {
     print("🕒 Scheduling daily notification...");
 
-    tz.TZDateTime scheduledTime = _nextInstanceOfTime(12, 25);
+    // Schedule for 1:05 PM in the device's local timezone
+    final tz.TZDateTime scheduledTime = _nextInstanceOfTime(14, 26); // 1:05 PM
     print("📅 Scheduled time: $scheduledTime");
+
+    const AndroidNotificationDetails androidNotificationDetails =
+    AndroidNotificationDetails(
+      'daily_notification_channel',
+      'Daily Notifications',
+      channelDescription: 'Channel for daily reminders',
+      importance: Importance.max,
+      priority: Priority.high,
+      ticker: 'ticker',
+    );
+
+    const NotificationDetails notificationDetails =
+    NotificationDetails(android: androidNotificationDetails);
 
     await flutterLocalNotificationsPlugin.zonedSchedule(
       0,
-      'Scheduled Notification',
-      'It\'s time for your notification!',
+      'Daily Reminder',
+      'It\'s time for your daily notification!',
       scheduledTime,
-      const NotificationDetails(
-        android: AndroidNotificationDetails(
-          'periodic_notification_channel',
-          'Periodic Notifications',
-          channelDescription: 'Channel for periodic notifications',
-          importance: Importance.max,
-          priority: Priority.high,
-          enableLights: true,
-          enableVibration: true,
-        ),
-        iOS: DarwinNotificationDetails(),
-      ),
-      androidScheduleMode: AndroidScheduleMode.exactAllowWhileIdle,
+      notificationDetails,
+      androidScheduleMode: AndroidScheduleMode.exactAllowWhileIdle, // This is the correct usage
       uiLocalNotificationDateInterpretation: UILocalNotificationDateInterpretation.absoluteTime,
       matchDateTimeComponents: DateTimeComponents.time,
     );
@@ -141,51 +155,44 @@ class NotificationService {
     print("✅ Daily notification scheduled!");
   }
 
-  /// Schedule a periodic notification (e.g., every 3 hours)
+  /// Schedule periodic notifications (e.g., every minute)
   Future<void> schedulePeriodicNotifications() async {
     print("⏳ Scheduling periodic notifications...");
 
-    tz.TZDateTime scheduledTime = _nextInstanceOfTime(DateTime.now().hour , DateTime.now().minute);
-    print("📅 Next 3-hour interval: $scheduledTime");
+    const AndroidNotificationDetails androidNotificationDetails =
+    AndroidNotificationDetails(
+      'periodic_notification_channel',
+      'Periodic Notifications',
+      channelDescription: 'Channel for periodic notifications',
+      importance: Importance.max,
+      priority: Priority.high,
+      ticker: 'ticker',
+    );
 
-    await flutterLocalNotificationsPlugin.zonedSchedule(
+    const NotificationDetails notificationDetails =
+    NotificationDetails(android: androidNotificationDetails);
+
+    await flutterLocalNotificationsPlugin.periodicallyShow(
       1,
-      'Did you know?',
-      'Here\'s a fun fact: MGPT is awesome!',
-      scheduledTime,
-      const NotificationDetails(
-        android: AndroidNotificationDetails(
-          'periodic_notification_channel',
-          'Periodic Notifications',
-          channelDescription: 'Channel for periodic notifications',
-          importance: Importance.max,
-          priority: Priority.high,
-          enableLights: true,
-          enableVibration: true,
-        ),
-        iOS: DarwinNotificationDetails(),
-      ),
-      androidScheduleMode: AndroidScheduleMode.exactAllowWhileIdle,
-      uiLocalNotificationDateInterpretation: UILocalNotificationDateInterpretation.absoluteTime,
-      matchDateTimeComponents: DateTimeComponents.time,
+      'Periodic Notification',
+      'This is a periodic notification!',
+      RepeatInterval.everyMinute,  // Set the interval for periodic notifications
+      notificationDetails,
+      androidScheduleMode: AndroidScheduleMode.exactAllowWhileIdle, // Required in v18.0.1+
     );
 
     print("✅ Periodic notifications scheduled!");
   }
 
+
+
   /// Helper function to schedule notifications at the correct local time
   tz.TZDateTime _nextInstanceOfTime(int hour, int minute) {
-    tz.initializeTimeZones();
     final tz.TZDateTime now = tz.TZDateTime.now(tz.local);
-    tz.TZDateTime scheduledDate =
-    tz.TZDateTime(tz.local, now.year, now.month, now.day, hour, minute);
-
-    print("📅 Current Time: $now");
-    print("📌 Scheduled Time Before Adjustment: $scheduledDate");
+    tz.TZDateTime scheduledDate = tz.TZDateTime(tz.local, now.year, now.month, now.day, hour, minute);
 
     if (scheduledDate.isBefore(now)) {
       scheduledDate = scheduledDate.add(const Duration(days: 1));
-      print("🔄 Adjusted Scheduled Time: $scheduledDate");
     }
 
     return scheduledDate;
