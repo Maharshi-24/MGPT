@@ -16,6 +16,8 @@ dependencies:
   provider: ^6.0.0
   firebase_core: ^2.18.0
   firebase_auth: ^4.11.0
+  flutter_local_notifications: ^18.0.1
+  timezone: ^0.10.0
 
 dev_dependencies:
   flutter_test:
