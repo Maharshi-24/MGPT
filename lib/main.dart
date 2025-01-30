@@ -14,11 +14,8 @@ void main() async {
 
   // Initialize notifications
   final notificationService = NotificationService();
-  await notificationService.init();
-  await notificationService.scheduleDailyNotification();
-  await notificationService.schedulePeriodicNotifications();
+  await notificationService.init(); // Start periodic notifications (every 10 seconds)
 }
-
 
 class MyApp extends StatelessWidget {
   const MyApp({Key? key}) : super(key: key);
