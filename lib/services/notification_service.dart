@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:flutter_timezone/flutter_timezone.dart';
 import 'package:timezone/timezone.dart' as tz;
@@ -11,6 +12,26 @@ class NotificationService {
 
   final FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin =
   FlutterLocalNotificationsPlugin();
+
+  late Timer _timer; // Timer to handle periodic notifications every hour
+  int _messageIndex = 0; // Index to track which message to show
+
+  // List of periodic messages (every 1 hour)
+  final List<String> _periodicMessages = [
+    "Haven't chatted in a while? Your AI is here to help—ask me anything!",
+    "Need assistance? Your AI is ready to chat. Let’s continue where we left off!",
+    "Stuck on something? Your AI assistant is here to help—just ask!",
+    "It’s been a while! Have any questions today?"
+  ];
+
+  // List of daily tips (at 9 AM)
+  final List<String> _dailyTips = [
+    "Did you know? You can ask AI to summarize long documents instantly!",
+    "Tip of the day: Use AI to generate creative ideas for your projects!",
+    "Want to boost productivity? Try using AI for task automation!",
+    "Fun fact: AI can help you draft emails, code snippets, and more—give it a try!",
+    "AI insight: The best way to learn something new? Ask your AI!"
+  ];
 
   Future<void> init() async {
     const AndroidInitializationSettings initializationSettingsAndroid =
@@ -35,9 +56,15 @@ class NotificationService {
 
     // Create notification channels
     await _createNotificationChannels();
+
+    // Start periodic notifications (every 1 hour)
+    startPeriodicNotifications();
+
+    // Schedule daily notification at 9 AM
+    scheduleDailyNotification();
   }
 
-  /// Configure local timezone using flutter_timezone
+  // Configure local time zone
   Future<void> _configureLocalTimeZone() async {
     tz.initializeTimeZones();
     final String timeZoneName = await FlutterTimezone.getLocalTimezone();
@@ -45,7 +72,7 @@ class NotificationService {
     print("✅ Timezone configured: $timeZoneName");
   }
 
-  /// Request notification permissions for Android 13+ and iOS
+  // Request notification permissions for Android 13+ and iOS
   Future<void> _requestPermissions() async {
     final status = await Permission.notification.request();
 
@@ -57,7 +84,7 @@ class NotificationService {
     }
   }
 
-  /// Create necessary notification channels for Android 8.0+
+  // Create necessary notification channels for Android 8.0+
   Future<void> _createNotificationChannels() async {
     final AndroidFlutterLocalNotificationsPlugin? androidPlugin =
     flutterLocalNotificationsPlugin.resolvePlatformSpecificImplementation<
@@ -71,29 +98,29 @@ class NotificationService {
         importance: Importance.max,
       );
 
-      const AndroidNotificationChannel dailyChannel = AndroidNotificationChannel(
-        'daily_notification_channel',
-        'Daily Notifications',
-        description: 'Channel for daily reminders',
-        importance: Importance.max,
-      );
-
       const AndroidNotificationChannel periodicChannel = AndroidNotificationChannel(
         'periodic_notification_channel',
         'Periodic Notifications',
-        description: 'Channel for periodic notifications',
+        description: 'Channel for periodic notifications every 1 hour',
+        importance: Importance.max,
+      );
+
+      const AndroidNotificationChannel dailyTipChannel = AndroidNotificationChannel(
+        'daily_tip_notification_channel',
+        'Daily Tips',
+        description: 'Channel for daily tips at 9 AM',
         importance: Importance.max,
       );
 
       await androidPlugin.createNotificationChannel(instantChannel);
-      await androidPlugin.createNotificationChannel(dailyChannel);
       await androidPlugin.createNotificationChannel(periodicChannel);
+      await androidPlugin.createNotificationChannel(dailyTipChannel);
 
       print("✅ Notification channels created!");
     }
   }
 
-  /// Show an instant notification (manual trigger)
+  // Show an instant notification (manual trigger)
   Future<void> showInstantNotification() async {
     print("🔔 Attempting to show instant notification...");
 
@@ -111,28 +138,75 @@ class NotificationService {
     NotificationDetails(android: androidNotificationDetails);
 
     await flutterLocalNotificationsPlugin.show(
-      2,
-      'You know...',
-      'Eggs are the best🥚😋',
+      0,
+      'Reminder',
+      'This is an instant notification triggered manually!',
       notificationDetails,
     );
 
-    print("✅ Notification should be displayed!");
+    print("✅ Instant notification displayed!");
   }
 
-  /// Schedule a daily notification at a fixed time (e.g., 1:05 PM)
-  Future<void> scheduleDailyNotification() async {
-    print("🕒 Scheduling daily notification...");
+  // Start periodic notifications every 1 hour, cycling through messages
+  void startPeriodicNotifications() {
+    _timer = Timer.periodic(Duration(hours: 1), (timer) {
+      showPeriodicNotification(); // Trigger a notification every 1 hour
+    });
+  }
 
-    // Schedule for 1:05 PM in the device's local timezone
-    final tz.TZDateTime scheduledTime = _nextInstanceOfTime(14, 26); // 1:05 PM
-    print("📅 Scheduled time: $scheduledTime");
+  // Show a periodic notification with the next message in the list
+  Future<void> showPeriodicNotification() async {
+    // Get the message to show
+    String message = _periodicMessages[_messageIndex];
+
+    // Cycle to the next message
+    _messageIndex = (_messageIndex + 1) % _periodicMessages.length;
+
+    print("🔔 Attempting to show periodic notification: $message");
 
     const AndroidNotificationDetails androidNotificationDetails =
     AndroidNotificationDetails(
-      'daily_notification_channel',
-      'Daily Notifications',
-      channelDescription: 'Channel for daily reminders',
+      'periodic_notification_channel',
+      'Periodic Notifications',
+      channelDescription: 'Channel for periodic notifications every 1 hour',
+      importance: Importance.max,
+      priority: Priority.high,
+      ticker: 'ticker',
+    );
+
+    const NotificationDetails notificationDetails =
+    NotificationDetails(android: androidNotificationDetails);
+
+    await flutterLocalNotificationsPlugin.show(
+      1, // Unique ID for periodic notifications
+      'Reminder',
+      message,
+      notificationDetails,
+    );
+
+    print("✅ Periodic notification displayed!");
+  }
+
+  // Schedule daily notification at 9 AM
+  Future<void> scheduleDailyNotification() async {
+    print("🕒 Scheduling daily notification at 9 AM...");
+
+    // Get a random message from the daily tips list
+    String message = _dailyTips[DateTime.now().second % _dailyTips.length];
+
+    final tz.TZDateTime now = tz.TZDateTime.now(tz.local);
+    tz.TZDateTime scheduledTime = tz.TZDateTime(tz.local, now.year, now.month, now.day, 9, 0);
+
+    // If the scheduled time is already past, schedule for the next day
+    if (scheduledTime.isBefore(now)) {
+      scheduledTime = scheduledTime.add(const Duration(days: 1));
+    }
+
+    const AndroidNotificationDetails androidNotificationDetails =
+    AndroidNotificationDetails(
+      'daily_tip_notification_channel',
+      'Daily Tips',
+      channelDescription: 'Channel for daily tips at 9 AM',
       importance: Importance.max,
       priority: Priority.high,
       ticker: 'ticker',
@@ -142,59 +216,22 @@ class NotificationService {
     NotificationDetails(android: androidNotificationDetails);
 
     await flutterLocalNotificationsPlugin.zonedSchedule(
-      0,
-      'Daily Reminder',
-      'It\'s time for your daily notification!',
+      2, // Unique ID for the daily notification
+      'Tip of the Day',
+      message,
       scheduledTime,
       notificationDetails,
-      androidScheduleMode: AndroidScheduleMode.exactAllowWhileIdle, // This is the correct usage
+      androidScheduleMode: AndroidScheduleMode.exactAllowWhileIdle, // Required for exact timing
       uiLocalNotificationDateInterpretation: UILocalNotificationDateInterpretation.absoluteTime,
       matchDateTimeComponents: DateTimeComponents.time,
     );
 
-    print("✅ Daily notification scheduled!");
+    print("✅ Daily notification scheduled for: $scheduledTime");
   }
 
-  /// Schedule periodic notifications (e.g., every minute)
-  Future<void> schedulePeriodicNotifications() async {
-    print("⏳ Scheduling periodic notifications...");
-
-    const AndroidNotificationDetails androidNotificationDetails =
-    AndroidNotificationDetails(
-      'periodic_notification_channel',
-      'Periodic Notifications',
-      channelDescription: 'Channel for periodic notifications',
-      importance: Importance.max,
-      priority: Priority.high,
-      ticker: 'ticker',
-    );
-
-    const NotificationDetails notificationDetails =
-    NotificationDetails(android: androidNotificationDetails);
-
-    await flutterLocalNotificationsPlugin.periodicallyShow(
-      1,
-      'Periodic Notification',
-      'This is a periodic notification!',
-      RepeatInterval.everyMinute,  // Set the interval for periodic notifications
-      notificationDetails,
-      androidScheduleMode: AndroidScheduleMode.exactAllowWhileIdle, // Required in v18.0.1+
-    );
-
-    print("✅ Periodic notifications scheduled!");
-  }
-
-
-
-  /// Helper function to schedule notifications at the correct local time
-  tz.TZDateTime _nextInstanceOfTime(int hour, int minute) {
-    final tz.TZDateTime now = tz.TZDateTime.now(tz.local);
-    tz.TZDateTime scheduledDate = tz.TZDateTime(tz.local, now.year, now.month, now.day, hour, minute);
-
-    if (scheduledDate.isBefore(now)) {
-      scheduledDate = scheduledDate.add(const Duration(days: 1));
-    }
-
-    return scheduledDate;
+  // Stop the periodic notifications when not needed
+  void stopPeriodicNotifications() {
+    _timer.cancel();
+    print("❌ Periodic notifications stopped.");
   }
 }
