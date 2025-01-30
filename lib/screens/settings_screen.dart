@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'changelog_screen.dart';
+import '../services/notification_service.dart'; // Import the notification service
 
 class SettingsScreen extends StatefulWidget {
   const SettingsScreen({Key? key}) : super(key: key);
@@ -11,6 +12,7 @@ class SettingsScreen extends StatefulWidget {
 
 class _SettingsScreenState extends State<SettingsScreen> {
   final FirebaseAuth _auth = FirebaseAuth.instance;
+  final NotificationService _notificationService = NotificationService(); // Create an instance of NotificationService
 
   String _userName = '';
   String _userEmail = '';
@@ -107,6 +109,15 @@ class _SettingsScreenState extends State<SettingsScreen> {
             },
           ),
           ListTile(
+            leading: Icon(Icons.notifications, color: Colors.white), // Add a notification test button
+            title: Text('Test Notification', style: TextStyle(color: Colors.white)),
+              onTap: () async {
+                print("🔔 Sending test notification...");
+                await _notificationService.showInstantNotification();
+                print("✅ Notification sent!");
+              }
+          ),
+          ListTile(
             leading: Icon(Icons.logout, color: Colors.red),
             title: Text('Sign out', style: TextStyle(color: Colors.red)),
             onTap: () async {
@@ -119,4 +130,3 @@ class _SettingsScreenState extends State<SettingsScreen> {
     );
   }
 }
-
