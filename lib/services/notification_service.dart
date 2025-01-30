@@ -139,8 +139,8 @@ class NotificationService {
 
     await flutterLocalNotificationsPlugin.show(
       0,
-      'Reminder',
-      'This is an instant notification triggered manually!',
+      'You know...',
+      'Eggs are the best🥚😋',
       notificationDetails,
     );
 
@@ -179,7 +179,7 @@ class NotificationService {
 
     await flutterLocalNotificationsPlugin.show(
       1, // Unique ID for periodic notifications
-      'Reminder',
+      'MGPT',
       message,
       notificationDetails,
     );
