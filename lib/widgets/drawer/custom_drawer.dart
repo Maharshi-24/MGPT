@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart'; // Import for HapticFeedback
 import 'package:firebase_auth/firebase_auth.dart';
 import '../../screens/settings_screen.dart';
 import '../../utils/custom_page_route.dart';
@@ -20,8 +21,9 @@ class _CustomDrawerState extends State<CustomDrawer> {
   Future<void> _logout(BuildContext context) async {
     try {
       await FirebaseAuth.instance.signOut();
+      // Trigger haptic feedback
+      HapticFeedback.mediumImpact();
       print('Logout successful!');
-      // No need to navigate manually; AuthGate will handle it
     } catch (e) {
       print('Logout failed: $e');
       ScaffoldMessenger.of(context).showSnackBar(
@@ -31,6 +33,8 @@ class _CustomDrawerState extends State<CustomDrawer> {
   }
 
   void _openSettingsPage(BuildContext context) {
+    // Trigger haptic feedback
+    HapticFeedback.lightImpact();
     Navigator.push(
       context,
       PushPageRoute(page: SettingsScreen()),
@@ -52,12 +56,16 @@ class _CustomDrawerState extends State<CustomDrawer> {
           _currentDragOffset = details.primaryDelta! / screenWidth;
           _drawerWidth = (_drawerWidth + _currentDragOffset).clamp(0.7, _maxStretch);
         });
+        // Trigger haptic feedback during drag
+        HapticFeedback.lightImpact();
       },
       onHorizontalDragEnd: (DragEndDetails details) {
         setState(() {
           _drawerWidth = 0.7;
           _currentDragOffset = 0.0;
         });
+        // Trigger haptic feedback when drag ends
+        HapticFeedback.mediumImpact();
       },
       child: AnimatedContainer(
         duration: const Duration(milliseconds: 200),
@@ -85,16 +93,35 @@ class _CustomDrawerState extends State<CustomDrawer> {
                               borderRadius: BorderRadius.circular(36),
                               borderSide: BorderSide.none,
                             ),
-                            prefixIcon: const Icon(Icons.search, color: Colors.white),
+                            prefixIcon: GestureDetector(
+                              onTap: () {
+                                HapticFeedback.lightImpact(); // 🔹 Haptic feedback when tapping the search icon
+                              },
+                              child: const Icon(Icons.search, color: Colors.white),
+                            ),
                             contentPadding: const EdgeInsets.symmetric(vertical: 0),
                           ),
                           style: const TextStyle(color: Colors.white),
+                          onTap: () {
+                            HapticFeedback.selectionClick(); // 🔹 Haptic feedback when tapping the search field
+                          },
+                          onChanged: (value) {
+                            if (value.isNotEmpty) {
+                              HapticFeedback.lightImpact(); // 🔹 Haptic feedback when typing
+                            }
+                          },
+                          onSubmitted: (value) {
+                            HapticFeedback.mediumImpact(); // 🔹 Haptic feedback when submitting search
+                          },
                         ),
+
                       ),
                       const SizedBox(width: 8),
                       IconButton(
                         icon: const Icon(Icons.drive_file_rename_outline, color: Colors.white),
                         onPressed: () {
+                          // Trigger haptic feedback
+                          HapticFeedback.lightImpact();
                           // Handle the edit icon press
                         },
                       ),
@@ -200,4 +227,3 @@ class _DrawerClipper extends CustomClipper<Path> {
   @override
   bool shouldReclip(covariant CustomClipper<Path> oldClipper) => false;
 }
-
