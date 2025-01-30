@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart'; // Import for HapticFeedback
 import 'package:firebase_auth/firebase_auth.dart';
 import 'changelog_screen.dart';
 import '../services/notification_service.dart';
@@ -42,7 +43,11 @@ class _SettingsScreenState extends State<SettingsScreen> {
       leading: Icon(icon, color: iconColor ?? Colors.white),
       title: Text(title, style: TextStyle(color: Colors.white)),
       subtitle: subtitle != null ? Text(subtitle, style: TextStyle(color: Colors.grey[400])) : null,
-      onTap: onTap,
+      onTap: () {
+        // Add haptic feedback
+        HapticFeedback.lightImpact();
+        if (onTap != null) onTap();
+      },
     );
   }
 
@@ -56,6 +61,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
         leading: IconButton(
           icon: Icon(Icons.arrow_back, color: Colors.white),
           onPressed: () {
+            HapticFeedback.lightImpact(); // Add haptic feedback
             Navigator.of(context).pop();
           },
         ),
