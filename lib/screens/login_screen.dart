@@ -1,3 +1,4 @@
+import 'package:action_slider/action_slider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart'; // Import for HapticFeedback
 import 'package:firebase_auth/firebase_auth.dart';
@@ -115,7 +116,7 @@ class _LoginScreenState extends State<LoginScreen> with SingleTickerProviderStat
     });
   }
 
-  Future<void> _login() async {
+  Future<bool> _login() async {
     if (_formKey.currentState!.validate()) {
       setState(() => _isLoading = true);
       try {
@@ -124,18 +125,26 @@ class _LoginScreenState extends State<LoginScreen> with SingleTickerProviderStat
           password: _passwordController.text.trim(),
         );
         print('Login successful! User: ${userCredential.user?.email}');
-        HapticFeedback.lightImpact(); // Haptic feedback on successful login
+        HapticFeedback.lightImpact();
+        return true; // Success
       } on FirebaseAuthException catch (e) {
         print('Login failed: ${e.message}');
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text(e.message ?? 'Login failed')),
+          SnackBar(
+            content: Text(e.message ?? 'Login failed'),
+            backgroundColor: Colors.redAccent,
+            behavior: SnackBarBehavior.floating,
+          ),
         );
-        HapticFeedback.heavyImpact(); // Haptic feedback on login failure
+        HapticFeedback.heavyImpact();
+        return false; // Failure
       } finally {
         setState(() => _isLoading = false);
       }
     }
+    return false; // Validation failed
   }
+
 
   @override
   void dispose() {
@@ -269,31 +278,38 @@ class _LoginScreenState extends State<LoginScreen> with SingleTickerProviderStat
                       validator: (value) => value!.isEmpty ? 'Enter password' : null,
                     ),
                     const SizedBox(height: 24),
-                    SizedBox(
+                    ActionSlider.standard(
+                      sliderBehavior: SliderBehavior.stretch,
+                      backgroundColor: Colors.blueGrey.shade900, // Dark elegant base color
+                      icon: const Icon(Icons.arrow_forward_ios, color: Colors.white70),
+                      loadingIcon: const CircularProgressIndicator(color: Colors.white),
+                      successIcon: const Icon(Icons.check_circle, color: Colors.lightGreenAccent), // Success icon
+                      failureIcon: const Icon(Icons.close_rounded, color: Colors.redAccent), // Failure icon
+                      height: 60,
                       width: double.infinity,
-                      child: ElevatedButton(
-                        onPressed: _isLoading ? null : _login,
-                        style: ElevatedButton.styleFrom(
-                          backgroundColor: Colors.blue,
-                          padding: const EdgeInsets.symmetric(vertical: 16),
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(8),
-                            side: const BorderSide( // Add a border
-                              color: Colors.grey, // Border color
-                            ),
-                          ),
-                        ),
-                        child: _isLoading
-                            ? const CircularProgressIndicator(color: Colors.white)
-                            : const Text(
-                          'Log In',
+                      toggleColor: Colors.tealAccent.shade400, // Vibrant contrast for the toggle
+                      child: Center(
+                        child: Text(
+                          'Slide to Log In',
                           style: TextStyle(
                             color: Colors.white,
                             fontSize: 16,
-                            fontWeight: FontWeight.bold,
+                            fontWeight: FontWeight.w600,
                           ),
                         ),
                       ),
+                      action: (controller) async {
+                        controller.loading(); // Start loading animation
+                        bool loginSuccessful = await _login(); // Check login result
+
+                        if (loginSuccessful) {
+                          controller.success(); // Show success animation
+                        } else {
+                          controller.failure(); // Show failure animation
+                          await Future.delayed(const Duration(milliseconds: 1200)); // Short delay before reset
+                          controller.reset(); // Reset the slider position
+                        }
+                      },
                     ),
                     const SizedBox(height: 16),
                     TextButton(
