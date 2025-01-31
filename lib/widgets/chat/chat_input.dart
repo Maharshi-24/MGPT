@@ -1,5 +1,7 @@
+import 'dart:io';  // Import for File handling
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart'; // Import for HapticFeedback
+import 'package:image_picker/image_picker.dart'; // Import for image picker
 import 'package:provider/provider.dart';
 import '../../../providers/chat_provider.dart';
 
@@ -13,6 +15,26 @@ class ChatInput extends StatefulWidget {
 class _ChatInputState extends State<ChatInput> {
   bool isExpanded = false; // To track if the text field is expanded
   bool isIconsVisible = true; // To track if the icons are visible
+  File? _image; // Store the selected image
+
+  final ImagePicker _picker = ImagePicker();
+
+  // Function to pick an image from the gallery
+  Future<void> _pickImage() async {
+    final pickedFile = await _picker.pickImage(source: ImageSource.gallery);
+    if (pickedFile != null) {
+      setState(() {
+        _image = File(pickedFile.path);
+      });
+    }
+  }
+
+  // Function to remove the image
+  void _removeImage() {
+    setState(() {
+      _image = null;
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -59,10 +81,10 @@ class _ChatInputState extends State<ChatInput> {
               // Show icons when they are visible and text field is not expanded
               if (isIconsVisible && !isExpanded)
                 Row(
-                  mainAxisSize: MainAxisSize.values[0], // Reduce the space between icons
+                  mainAxisSize: MainAxisSize.min, // Reduce the space between icons
                   children: [
                     IconButton(
-                      onPressed: () {},
+                      onPressed: _pickImage,  // Pick image on icon press
                       icon: const Icon(
                         Icons.image_outlined,
                         color: Colors.white,
@@ -172,9 +194,43 @@ class _ChatInputState extends State<ChatInput> {
                   ),
                 ),
               ),
-
             ],
           ),
+
+          // Display the picked image inside the TextField area
+          if (_image != null)
+            Padding(
+              padding: const EdgeInsets.only(top: 8),
+              child: Stack(
+                children: [
+                  // Display the image inside the TextField area
+                  Container(
+                    width: 80,
+                    height: 80,
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(8),
+                      image: DecorationImage(
+                        image: FileImage(_image!),
+                        fit: BoxFit.cover,
+                      ),
+                    ),
+                  ),
+                  // Cross button to remove the image
+                  Positioned(
+                    top: 0,
+                    right: 0,
+                    child: IconButton(
+                      onPressed: _removeImage,  // Remove image on cross press
+                      icon: const Icon(
+                        Icons.close,
+                        color: Colors.white,
+                        size: 20,
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            ),
         ],
       ),
     );
