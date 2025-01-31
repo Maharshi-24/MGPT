@@ -20,6 +20,8 @@ dependencies:
   timezone: ^0.10.0
   permission_handler: ^11.3.1
   flutter_timezone: ^2.0.0
+  image_picker: ^0.8.5+3
+  action_slider: ^0.7.0
 
 dev_dependencies:
   flutter_test:
