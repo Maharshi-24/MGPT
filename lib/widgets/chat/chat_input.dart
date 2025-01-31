@@ -1,7 +1,8 @@
-import 'dart:io';  // Import for File handling
+import 'dart:io'; // For File handling
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart'; // Import for HapticFeedback
-import 'package:image_picker/image_picker.dart'; // Import for image picker
+import 'package:flutter/services.dart'; // For HapticFeedback
+import 'package:image_picker/image_picker.dart'; // For Image Picker
+import 'package:image/image.dart' as img; // For resizing the image
 import 'package:provider/provider.dart';
 import '../../../providers/chat_provider.dart';
 
@@ -16,16 +17,29 @@ class _ChatInputState extends State<ChatInput> {
   bool isExpanded = false; // To track if the text field is expanded
   bool isIconsVisible = true; // To track if the icons are visible
   File? _image; // Store the selected image
-
   final ImagePicker _picker = ImagePicker();
 
-  // Function to pick an image from the gallery
+  // Function to pick and resize the image
   Future<void> _pickImage() async {
     final pickedFile = await _picker.pickImage(source: ImageSource.gallery);
     if (pickedFile != null) {
-      setState(() {
-        _image = File(pickedFile.path);
-      });
+      // Load the image as a byte array
+      final bytes = await pickedFile.readAsBytes();
+
+      // Decode the image and resize it
+      img.Image? image = img.decodeImage(Uint8List.fromList(bytes));
+
+      // Resize the image to 100px by 100px
+      if (image != null) {
+        image = img.copyResize(image, width: 100, height: 100); // Resize to 100px by 100px
+        final resizedFile = File(pickedFile.path)..writeAsBytesSync(img.encodeJpg(image));
+
+        // Set the resized image to display
+        setState(() {
+          _image = resizedFile;
+          isExpanded = true; // Expand the text field to fit the image
+        });
+      }
     }
   }
 
@@ -33,6 +47,7 @@ class _ChatInputState extends State<ChatInput> {
   void _removeImage() {
     setState(() {
       _image = null;
+      isExpanded = false; // Collapse text field when the image is removed
     });
   }
 
@@ -134,33 +149,69 @@ class _ChatInputState extends State<ChatInput> {
                         children: [
                           const SizedBox(width: 16),
                           Expanded(
-                            child: TextField(
-                              controller: chatProvider.textController,
-                              focusNode: chatProvider.focusNode,
-                              style: const TextStyle(color: Colors.white),
-                              decoration: InputDecoration(
-                                hintText: 'Message',
-                                hintStyle: const TextStyle(color: Colors.grey),
-                                border: InputBorder.none,
-                              ),
-                              enabled: !chatProvider.isThinking,
-                              onTap: () {
-                                HapticFeedback.selectionClick(); // Light vibration for text field tap
-                                setState(() {
-                                  isExpanded = true;
-                                  isIconsVisible = false; // Hide icons and show plus button
-                                });
-                              },
-                              onSubmitted: (value) {
-                                if (!chatProvider.isThinking) {
-                                  HapticFeedback.lightImpact(); // Light vibration for submission
-                                  chatProvider.sendMessage();
-                                }
-                              },
+                            child: Column(
+                              children: [
+                                // Show the image inside the text input area if selected
+                                if (_image != null)
+                                  Stack(
+                                    children: [
+                                      // Display the resized image in the text input area
+                                      Container(
+                                        width: double.infinity,
+                                        height: 100, // Fixed height for the resized image
+                                        decoration: BoxDecoration(
+                                          borderRadius: BorderRadius.circular(8),
+                                          image: DecorationImage(
+                                            image: FileImage(_image!),
+                                            fit: BoxFit.cover, // Fit the image to cover the width
+                                          ),
+                                        ),
+                                      ),
+                                      Positioned(
+                                        top: 4,
+                                        right: 4,
+                                        child: IconButton(
+                                          onPressed: _removeImage,  // Remove image on cross press
+                                          icon: const Icon(
+                                            Icons.close,
+                                            color: Colors.white,
+                                            size: 20,
+                                          ),
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                // TextField below the image (if image is present)
+                                TextField(
+                                  controller: chatProvider.textController,
+                                  focusNode: chatProvider.focusNode,
+                                  style: const TextStyle(color: Colors.white),
+                                  decoration: InputDecoration(
+                                    hintText: 'Message',
+                                    hintStyle: const TextStyle(color: Colors.grey),
+                                    border: InputBorder.none,
+                                  ),
+                                  enabled: !chatProvider.isThinking,
+                                  onTap: () {
+                                    HapticFeedback.selectionClick(); // Light vibration for text field tap
+                                    setState(() {
+                                      isExpanded = true;
+                                      isIconsVisible = false; // Hide icons and show plus button
+                                    });
+                                  },
+                                  onSubmitted: (value) {
+                                    if (!chatProvider.isThinking) {
+                                      HapticFeedback.lightImpact(); // Light vibration for submission
+                                      chatProvider.sendMessage();
+                                    }
+                                  },
+                                ),
+                              ],
                             ),
                           ),
-                          const Icon(Icons.mic_outlined, color: Colors.white),
                           const SizedBox(width: 8),
+                          // Mic icon remains at the starting point of the text input area
+                          const Icon(Icons.mic_outlined, color: Colors.white),
                         ],
                       ),
                     ),
@@ -196,41 +247,6 @@ class _ChatInputState extends State<ChatInput> {
               ),
             ],
           ),
-
-          // Display the picked image inside the TextField area
-          if (_image != null)
-            Padding(
-              padding: const EdgeInsets.only(top: 8),
-              child: Stack(
-                children: [
-                  // Display the image inside the TextField area
-                  Container(
-                    width: 80,
-                    height: 80,
-                    decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(8),
-                      image: DecorationImage(
-                        image: FileImage(_image!),
-                        fit: BoxFit.cover,
-                      ),
-                    ),
-                  ),
-                  // Cross button to remove the image
-                  Positioned(
-                    top: 0,
-                    right: 0,
-                    child: IconButton(
-                      onPressed: _removeImage,  // Remove image on cross press
-                      icon: const Icon(
-                        Icons.close,
-                        color: Colors.white,
-                        size: 20,
-                      ),
-                    ),
-                  ),
-                ],
-              ),
-            ),
         ],
       ),
     );
