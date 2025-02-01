@@ -5,7 +5,7 @@ import 'package:image_picker/image_picker.dart';
 import 'package:image/image.dart' as img;
 import 'package:provider/provider.dart';
 import 'package:speech_to_text/speech_to_text.dart' as stt;
-import 'package:permission_handler/permission_handler.dart'; // Add this import
+import 'package:permission_handler/permission_handler.dart';
 import '../../../providers/chat_provider.dart';
 
 class ChatInput extends StatefulWidget {
@@ -59,7 +59,6 @@ class _ChatInputState extends State<ChatInput> {
 
   // Start listening to speech
   void _startListening() async {
-    // Check and request microphone permission
     var status = await Permission.microphone.status;
     if (!status.isGranted) {
       status = await Permission.microphone.request();
@@ -76,8 +75,12 @@ class _ChatInputState extends State<ChatInput> {
             onResult: (result) {
               setState(() {
                 _recognizedText = result.recognizedWords;
+                Provider.of<ChatProvider>(context, listen: false).textController.text = _recognizedText;
               });
             },
+            listenFor: const Duration(minutes: 1),
+            pauseFor: const Duration(seconds: 5),
+            localeId: 'en_US',
           );
         }
       }
@@ -86,18 +89,17 @@ class _ChatInputState extends State<ChatInput> {
     }
   }
 
+
   // Stop listening to speech
   void _stopListening() {
     if (_isListening) {
       _speech.stop();
       setState(() {
         _isListening = false;
-        // Update the text field with the recognized text
-        final chatProvider = Provider.of<ChatProvider>(context, listen: false);
-        chatProvider.textController.text = _recognizedText;
       });
     }
   }
+
 
   // Function to pick and resize the image
   Future<void> _pickImage() async {
