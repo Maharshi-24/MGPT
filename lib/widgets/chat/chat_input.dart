@@ -18,12 +18,15 @@ class ChatInput extends StatefulWidget {
 class _ChatInputState extends State<ChatInput> {
   bool isExpanded = false;
   bool isIconsVisible = true;
+  bool _isListening = false;
   File? _image;
   final ImagePicker _picker = ImagePicker();
 
+  // Height of the text field, can be adjusted
+  double textFieldHeight = 56.0; // Default height, you can change this value
+
   // Speech-to-text variables
   stt.SpeechToText _speech = stt.SpeechToText();
-  bool _isListening = false;
   String _recognizedText = '';
 
   @override
@@ -88,6 +91,7 @@ class _ChatInputState extends State<ChatInput> {
       print("Microphone permission denied.");
     }
   }
+
   // Stop listening to speech
   void _stopListening() {
     if (_isListening) {
@@ -97,7 +101,6 @@ class _ChatInputState extends State<ChatInput> {
       });
     }
   }
-
 
   // Function to pick and resize the image
   Future<void> _pickImage() async {
@@ -216,6 +219,7 @@ class _ChatInputState extends State<ChatInput> {
                             color: Colors.grey[850],
                             borderRadius: BorderRadius.circular(24),
                           ),
+                          height: textFieldHeight, // Control the height of the text field here
                           child: Row(
                             children: [
                               const SizedBox(width: 16),
@@ -259,7 +263,7 @@ class _ChatInputState extends State<ChatInput> {
                                         hintStyle: const TextStyle(color: Colors.grey),
                                         border: InputBorder.none,
                                       ),
-                                      enabled: !chatProvider.isThinking,
+                                      enabled: !_isListening, // Lock the text field when listening
                                       onTap: () {
                                         HapticFeedback.selectionClick();
                                         setState(() {
@@ -325,6 +329,27 @@ class _ChatInputState extends State<ChatInput> {
                   ),
                 ],
               ),
+              if (_isListening)
+                Center(
+                  child: AnimatedContainer(
+                    duration: const Duration(milliseconds: 300),
+                    width: 120, // Increased width of the container
+                    height: 240, // Increased height of the container
+                    decoration: BoxDecoration(
+                      color: Colors.blue,
+                      shape: BoxShape.circle,
+                    ),
+                    child: AnimatedContainer(
+                      duration: const Duration(milliseconds: 500),
+                      width: _isListening ? 110 : 120, // Animating the width
+                      height: _isListening ? 110 : 120, // Animating the height
+                      decoration: BoxDecoration(
+                        color: Colors.red,
+                        shape: BoxShape.circle,
+                      ),
+                    ),
+                  ),
+                ),
             ],
           ),
         ),
