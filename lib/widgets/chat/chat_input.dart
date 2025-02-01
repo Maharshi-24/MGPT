@@ -23,7 +23,7 @@ class _ChatInputState extends State<ChatInput> {
   final ImagePicker _picker = ImagePicker();
 
   // Height of the text field, can be adjusted
-  double textFieldHeight = 56.0; // Default height, you can change this value
+  double textFieldHeight = 50.0; // Default height, you can change this value
 
   // Speech-to-text variables
   stt.SpeechToText _speech = stt.SpeechToText();
