@@ -34,6 +34,8 @@ class NotificationService {
   ];
 
   Future<void> init() async {
+    print("🚀 Initializing NotificationService...");
+
     const AndroidInitializationSettings initializationSettingsAndroid =
     AndroidInitializationSettings('@mipmap/ic_launcher');
 
@@ -62,10 +64,13 @@ class NotificationService {
 
     // Schedule daily notification at 9 AM
     scheduleDailyNotification();
+
+    print("✅ NotificationService initialized!");
   }
 
   // Configure local time zone
   Future<void> _configureLocalTimeZone() async {
+    print("🌍 Configuring local timezone...");
     tz.initializeTimeZones();
     final String timeZoneName = await FlutterTimezone.getLocalTimezone();
     tz.setLocalLocation(tz.getLocation(timeZoneName));
@@ -74,6 +79,7 @@ class NotificationService {
 
   // Request notification permissions for Android 13+ and iOS
   Future<void> _requestPermissions() async {
+    print("🔔 Requesting notification permissions...");
     final status = await Permission.notification.request();
 
     if (status.isDenied || status.isPermanentlyDenied) {
@@ -86,6 +92,7 @@ class NotificationService {
 
   // Create necessary notification channels for Android 8.0+
   Future<void> _createNotificationChannels() async {
+    print("📢 Creating notification channels...");
     final AndroidFlutterLocalNotificationsPlugin? androidPlugin =
     flutterLocalNotificationsPlugin.resolvePlatformSpecificImplementation<
         AndroidFlutterLocalNotificationsPlugin>();
@@ -149,7 +156,9 @@ class NotificationService {
 
   // Start periodic notifications every 1 hour, cycling through messages
   void startPeriodicNotifications() {
-    _timer = Timer.periodic(Duration(hours: 1), (timer) {
+    print("⏰ Starting periodic notifications...");
+    _timer = Timer.periodic(Duration(minutes: 60), (timer) {
+      print("⏰ Timer triggered, showing periodic notification...");
       showPeriodicNotification(); // Trigger a notification every 1 hour
     });
   }
@@ -201,6 +210,8 @@ class NotificationService {
     if (scheduledTime.isBefore(now)) {
       scheduledTime = scheduledTime.add(const Duration(days: 1));
     }
+
+    print("🕒 Scheduled time: $scheduledTime");
 
     const AndroidNotificationDetails androidNotificationDetails =
     AndroidNotificationDetails(
