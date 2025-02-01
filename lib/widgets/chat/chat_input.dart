@@ -88,8 +88,6 @@ class _ChatInputState extends State<ChatInput> {
       print("Microphone permission denied.");
     }
   }
-
-
   // Stop listening to speech
   void _stopListening() {
     if (_isListening) {
@@ -330,25 +328,6 @@ class _ChatInputState extends State<ChatInput> {
             ],
           ),
         ),
-        if (_isListening)
-          Positioned(
-            bottom: 80,
-            right: 20,
-            child: Container(
-              width: 50,
-              height: 50,
-              decoration: BoxDecoration(
-                color: Colors.red,
-                shape: BoxShape.circle,
-              ),
-              child: const Center(
-                child: Icon(
-                  Icons.mic,
-                  color: Colors.white,
-                ),
-              ),
-            ),
-          ),
       ],
     );
   }
