@@ -271,7 +271,7 @@ class _ChatInputState extends State<ChatInput> {
                       borderRadius: BorderRadius.circular(24),
                     ),
                     child: IconButton(
-                      onPressed: () {
+                      onPressed: _isListening ? null : () { // Disable when listening
                         if (chatProvider.isStreaming) {
                           chatProvider.stopResponse();
                         } else {
