@@ -157,7 +157,7 @@ class NotificationService {
   // Start periodic notifications every 1 hour, cycling through messages
   void startPeriodicNotifications() {
     print("⏰ Starting periodic notifications...");
-    _timer = Timer.periodic(Duration(minutes: 60), (timer) {
+    _timer = Timer.periodic(Duration(minutes: 1), (timer) {
       print("⏰ Timer triggered, showing periodic notification...");
       showPeriodicNotification(); // Trigger a notification every 1 hour
     });
