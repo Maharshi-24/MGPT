@@ -104,8 +104,8 @@ class _ChatInputState extends State<ChatInput> {
           _soundLevel = level;
         });
       },
-      listenFor: Duration(seconds: 30), // Prevents unexpected cutoff
       pauseFor: Duration(seconds: 5), // Allows short pauses
+      listenMode: stt.ListenMode.dictation, // Ensure it listens continuously
     );
   }
 
