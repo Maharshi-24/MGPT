@@ -19,13 +19,13 @@ class _ChatInputState extends State<ChatInput> {
   bool isExpanded = false;
   bool isIconsVisible = true;
   bool _isListening = false;
+  double _soundLevel = 0.0;
   File? _image;
   final ImagePicker _picker = ImagePicker();
 
-  // Height of the text field, can be adjusted
-  double textFieldHeight = 50.0; // Default height, you can change this value
+  double textFieldHeight = 50.0;
 
-  // Speech-to-text variables
+  // Speech-to-text
   stt.SpeechToText _speech = stt.SpeechToText();
   String _recognizedText = '';
 
@@ -35,32 +35,25 @@ class _ChatInputState extends State<ChatInput> {
     _initializeSpeech();
   }
 
-  // Initialize speech-to-text
   void _initializeSpeech() async {
     bool available = await _speech.initialize(
       onStatus: (status) {
-        print("Speech status: $status");
-        if (status == 'done') {
+        if (status == 'done' && _isListening) {
           setState(() {
             _isListening = false;
+            _soundLevel = 0.0;
           });
         }
       },
       onError: (error) {
-        print("Speech error: $error");
         setState(() {
           _isListening = false;
+          _soundLevel = 0.0;
         });
       },
     );
-    if (!available) {
-      print("Speech recognition is not available on this device.");
-    } else {
-      print("Speech recognition initialized successfully.");
-    }
   }
 
-  // Start listening to speech
   void _startListening() async {
     var status = await Permission.microphone.status;
     if (!status.isGranted) {
@@ -69,63 +62,63 @@ class _ChatInputState extends State<ChatInput> {
 
     if (status.isGranted) {
       if (!_isListening) {
-        bool available = await _speech.initialize();
+        bool available = await _speech.initialize(
+          onError: (error) {
+            print("Speech error: $error");
+            setState(() {
+              _isListening = false;
+              _soundLevel = 0.0;
+            });
+          },
+        );
+
         if (available) {
           setState(() {
             _isListening = true;
           });
-          _speech.listen(
-            onResult: (result) {
-              setState(() {
-                _recognizedText = result.recognizedWords;
-                Provider.of<ChatProvider>(context, listen: false).textController.text = _recognizedText;
-              });
-            },
-            listenFor: const Duration(minutes: 1),
-            pauseFor: const Duration(seconds: 5),
-            localeId: 'en_US',
-          );
+
+          _speech.statusListener = (status) {
+            if (status == "notListening" && _isListening) {
+              _listenContinuously(); // Restart listening when it stops
+            }
+          };
+
+          _listenContinuously();
         }
       }
-    } else {
-      print("Microphone permission denied.");
     }
   }
 
-  // Stop listening to speech
+  void _listenContinuously() {
+    if (!_isListening) return;
+
+    _speech.listen(
+      onResult: (result) {
+        setState(() {
+          _recognizedText = result.recognizedWords;
+          Provider.of<ChatProvider>(context, listen: false).textController.text = _recognizedText;
+        });
+      },
+      onSoundLevelChange: (level) {
+        setState(() {
+          _soundLevel = level;
+        });
+      },
+      listenFor: Duration(seconds: 30), // Prevents unexpected cutoff
+      pauseFor: Duration(seconds: 5), // Allows short pauses
+    );
+  }
+
   void _stopListening() {
     if (_isListening) {
       _speech.stop();
       setState(() {
         _isListening = false;
+        _soundLevel = 0.0;
       });
     }
   }
 
-  // Function to pick and resize the image
-  Future<void> _pickImage() async {
-    final pickedFile = await _picker.pickImage(source: ImageSource.gallery);
-    if (pickedFile != null) {
-      final bytes = await pickedFile.readAsBytes();
-      img.Image? image = img.decodeImage(Uint8List.fromList(bytes));
-      if (image != null) {
-        image = img.copyResize(image, width: 100, height: 100);
-        final resizedFile = File(pickedFile.path)..writeAsBytesSync(img.encodeJpg(image));
-        setState(() {
-          _image = resizedFile;
-          isExpanded = true;
-        });
-      }
-    }
-  }
-
-  // Function to remove the image
-  void _removeImage() {
-    setState(() {
-      _image = null;
-      isExpanded = false;
-    });
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -175,7 +168,7 @@ class _ChatInputState extends State<ChatInput> {
                       mainAxisSize: MainAxisSize.min,
                       children: [
                         IconButton(
-                          onPressed: _pickImage,
+                          onPressed: () {},
                           icon: const Icon(
                             Icons.image_outlined,
                             color: Colors.white,
@@ -204,99 +197,63 @@ class _ChatInputState extends State<ChatInput> {
                   const SizedBox(width: 8),
 
                   Expanded(
-                    child: AnimatedSize(
-                      duration: const Duration(milliseconds: 300),
-                      curve: Curves.easeInOut,
-                      child: GestureDetector(
-                        onTap: () {
-                          setState(() {
-                            isExpanded = true;
-                            isIconsVisible = false;
-                          });
-                        },
-                        child: Container(
-                          decoration: BoxDecoration(
-                            color: Colors.grey[850],
-                            borderRadius: BorderRadius.circular(24),
-                          ),
-                          height: textFieldHeight, // Control the height of the text field here
-                          child: Row(
-                            children: [
-                              const SizedBox(width: 16),
-                              Expanded(
-                                child: Column(
-                                  children: [
-                                    if (_image != null)
-                                      Stack(
-                                        children: [
-                                          Container(
-                                            width: double.infinity,
-                                            height: 100,
-                                            decoration: BoxDecoration(
-                                              borderRadius: BorderRadius.circular(8),
-                                              image: DecorationImage(
-                                                image: FileImage(_image!),
-                                                fit: BoxFit.cover,
-                                              ),
-                                            ),
-                                          ),
-                                          Positioned(
-                                            top: 4,
-                                            right: 4,
-                                            child: IconButton(
-                                              onPressed: _removeImage,
-                                              icon: const Icon(
-                                                Icons.close,
-                                                color: Colors.white,
-                                                size: 20,
-                                              ),
-                                            ),
-                                          ),
-                                        ],
-                                      ),
-                                    TextField(
-                                      controller: chatProvider.textController,
-                                      focusNode: chatProvider.focusNode,
-                                      style: const TextStyle(color: Colors.white),
-                                      decoration: InputDecoration(
-                                        hintText: 'Message',
-                                        hintStyle: const TextStyle(color: Colors.grey),
-                                        border: InputBorder.none,
-                                      ),
-                                      enabled: !_isListening, // Lock the text field when listening
-                                      onTap: () {
-                                        HapticFeedback.selectionClick();
-                                        setState(() {
-                                          isExpanded = true;
-                                          isIconsVisible = false;
-                                        });
-                                      },
-                                      onSubmitted: (value) {
-                                        if (!chatProvider.isThinking) {
-                                          HapticFeedback.lightImpact();
-                                          chatProvider.sendMessage();
-                                        }
-                                      },
-                                    ),
-                                  ],
+                    child: GestureDetector(
+                      onTap: () {
+                        setState(() {
+                          isExpanded = true;
+                          isIconsVisible = false;
+                        });
+                      },
+                      child: Container(
+                        decoration: BoxDecoration(
+                          color: Colors.grey[850],
+                          borderRadius: BorderRadius.circular(24),
+                        ),
+                        height: textFieldHeight,
+                        child: Row(
+                          children: [
+                            const SizedBox(width: 16),
+                            Expanded(
+                              child: TextField(
+                                controller: chatProvider.textController,
+                                focusNode: chatProvider.focusNode,
+                                style: const TextStyle(color: Colors.white),
+                                decoration: const InputDecoration(
+                                  hintText: 'Message',
+                                  hintStyle: TextStyle(color: Colors.grey),
+                                  border: InputBorder.none,
                                 ),
-                              ),
-                              const SizedBox(width: 8),
-                              IconButton(
-                                onPressed: () {
-                                  if (_isListening) {
-                                    _stopListening();
-                                  } else {
-                                    _startListening();
+                                enabled: !_isListening,
+                                onTap: () {
+                                  HapticFeedback.selectionClick();
+                                  setState(() {
+                                    isExpanded = true;
+                                    isIconsVisible = false;
+                                  });
+                                },
+                                onSubmitted: (value) {
+                                  if (!chatProvider.isThinking) {
+                                    HapticFeedback.lightImpact();
+                                    chatProvider.sendMessage();
                                   }
                                 },
-                                icon: Icon(
-                                  _isListening ? Icons.mic_off : Icons.mic_outlined,
-                                  color: Colors.white,
-                                ),
                               ),
-                            ],
-                          ),
+                            ),
+                            const SizedBox(width: 8),
+                            IconButton(
+                              onPressed: () {
+                                if (_isListening) {
+                                  _stopListening();
+                                } else {
+                                  _startListening();
+                                }
+                              },
+                              icon: Icon(
+                                _isListening ? Icons.mic_off : Icons.mic_outlined,
+                                color: Colors.white,
+                              ),
+                            ),
+                          ],
                         ),
                       ),
                     ),
@@ -329,23 +286,28 @@ class _ChatInputState extends State<ChatInput> {
                   ),
                 ],
               ),
+
               if (_isListening)
                 Center(
-                  child: AnimatedContainer(
-                    duration: const Duration(milliseconds: 300),
-                    width: 120, // Increased width of the container
-                    height: 240, // Increased height of the container
-                    decoration: BoxDecoration(
-                      color: Colors.blue,
-                      shape: BoxShape.circle,
-                    ),
+                  child: Container(
+                    height: 240, // Fixed container height
+                    alignment: Alignment.center,
                     child: AnimatedContainer(
-                      duration: const Duration(milliseconds: 500),
-                      width: _isListening ? 110 : 120, // Animating the width
-                      height: _isListening ? 110 : 120, // Animating the height
-                      decoration: BoxDecoration(
-                        color: Colors.red,
+                      duration: const Duration(milliseconds: 200),
+                      width: 100 + _soundLevel * 3,
+                      height: 100 + _soundLevel * 3,
+                      decoration: const BoxDecoration(
+                        color: Colors.blue,
                         shape: BoxShape.circle,
+                      ),
+                      child: AnimatedContainer(
+                        duration: const Duration(milliseconds: 200),
+                        width: 90 + _soundLevel * 3,
+                        height: 90 + _soundLevel * 3,
+                        decoration: const BoxDecoration(
+                          color: Colors.red,
+                          shape: BoxShape.circle,
+                        ),
                       ),
                     ),
                   ),
