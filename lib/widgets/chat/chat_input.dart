@@ -3,7 +3,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:file_picker/file_picker.dart';
-import 'package:image/image.dart' as img; // Keep this import
 import 'package:provider/provider.dart';
 import 'package:speech_to_text/speech_to_text.dart' as stt;
 import 'package:permission_handler/permission_handler.dart';
@@ -336,55 +335,65 @@ class _ChatInputState extends State<ChatInput> {
                 ],
               ),
 
-              if (_image != null) // Show image thumbnail with cross button
-                Stack(
-                  children: [
-                    Image.file(
-                      _image!,
-                      width: 100,
-                      height: 100,
-                      fit: BoxFit.cover,
+              // Show the selected image outside the text input area
+              if (_image != null)
+                Padding(
+                  padding: const EdgeInsets.only(top: 16),
+                  child: Container(
+                    padding: const EdgeInsets.all(10),
+                    decoration: BoxDecoration(
+                      color: Colors.grey[800],
+                      borderRadius: BorderRadius.circular(16),
                     ),
-                    Positioned(
-                      top: 0,
-                      right: 0,
-                      child: IconButton(
-                        icon: const Icon(Icons.close, color: Colors.red),
-                        onPressed: _removeImage, // Remove image
-                      ),
+                    child: Row(
+                      children: [
+                        ClipRRect(
+                          borderRadius: BorderRadius.circular(12),
+                          child: Image.file(
+                            _image!,
+                            width: 100,
+                            height: 100,
+                            fit: BoxFit.cover,
+                          ),
+                        ),
+                        const SizedBox(width: 8),
+                        IconButton(
+                          icon: const Icon(Icons.close, color: Colors.red),
+                          onPressed: _removeImage, // Remove image
+                        ),
+                      ],
                     ),
-                  ],
+                  ),
                 ),
 
-              if (_file != null) // Show file name with cross button
-                Stack(
-                  children: [
-                    Container(
-                      padding: const EdgeInsets.all(8),
-                      color: Colors.grey[700],
-                      child: Row(
-                        children: [
-                          const Icon(Icons.insert_drive_file, color: Colors.white),
-                          const SizedBox(width: 8),
-                          Expanded(
-                            child: Text(
-                              _file!.path.split('/').last,
-                              style: TextStyle(color: Colors.white),
-                              overflow: TextOverflow.ellipsis,
-                            ),
+              // Show the selected file outside the text input area
+              if (_file != null)
+                Padding(
+                  padding: const EdgeInsets.only(top: 16),
+                  child: Container(
+                    padding: const EdgeInsets.all(10),
+                    decoration: BoxDecoration(
+                      color: Colors.grey[800],
+                      borderRadius: BorderRadius.circular(16),
+                    ),
+                    child: Row(
+                      children: [
+                        const Icon(Icons.insert_drive_file, color: Colors.white),
+                        const SizedBox(width: 8),
+                        Expanded(
+                          child: Text(
+                            _file!.path.split('/').last,
+                            style: const TextStyle(color: Colors.white),
+                            overflow: TextOverflow.ellipsis,
                           ),
-                        ],
-                      ),
+                        ),
+                        IconButton(
+                          icon: const Icon(Icons.close, color: Colors.red),
+                          onPressed: _removeFile, // Remove file
+                        ),
+                      ],
                     ),
-                    Positioned(
-                      top: 0,
-                      right: 0,
-                      child: IconButton(
-                        icon: const Icon(Icons.close, color: Colors.red),
-                        onPressed: _removeFile, // Remove file
-                      ),
-                    ),
-                  ],
+                  ),
                 ),
 
               if (_isListening)
