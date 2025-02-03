@@ -27,6 +27,7 @@ dependencies:
   speech_to_text: ^6.3.0
   worker_manager: ^7.2.2
   restart_app: ^1.3.2
+  local_auth: ^2.3.0
 
 dev_dependencies:
   flutter_test:
