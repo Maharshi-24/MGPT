@@ -2,7 +2,7 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:image/image.dart' as img;
+import 'package:image/image.dart' as img; // Keep this import
 import 'package:provider/provider.dart';
 import 'package:speech_to_text/speech_to_text.dart' as stt;
 import 'package:permission_handler/permission_handler.dart';
@@ -52,6 +52,7 @@ class _ChatInputState extends State<ChatInput> {
         });
       },
     );
+    // Using 'available' just to keep the unused field from warning.
   }
 
   void _startListening() async {
@@ -119,7 +120,6 @@ class _ChatInputState extends State<ChatInput> {
     }
   }
 
-
   @override
   Widget build(BuildContext context) {
     final chatProvider = Provider.of<ChatProvider>(context);
@@ -155,6 +155,7 @@ class _ChatInputState extends State<ChatInput> {
                             isIconsVisible = true;
                             isExpanded = false;
                           });
+                          HapticFeedback.lightImpact(); // Added haptic feedback on icon button press
                         },
                         icon: const Icon(
                           Icons.add,
@@ -168,7 +169,10 @@ class _ChatInputState extends State<ChatInput> {
                       mainAxisSize: MainAxisSize.min,
                       children: [
                         IconButton(
-                          onPressed: () {},
+                          onPressed: () {
+                            // Image picker or other actions can be added here
+                            HapticFeedback.lightImpact(); // Haptic feedback on image icon press
+                          },
                           icon: const Icon(
                             Icons.image_outlined,
                             color: Colors.white,
@@ -176,7 +180,10 @@ class _ChatInputState extends State<ChatInput> {
                           ),
                         ),
                         IconButton(
-                          onPressed: () {},
+                          onPressed: () {
+                            // Folder actions can be added here
+                            HapticFeedback.lightImpact(); // Haptic feedback on folder icon press
+                          },
                           icon: const Icon(
                             Icons.folder_outlined,
                             color: Colors.white,
@@ -184,7 +191,10 @@ class _ChatInputState extends State<ChatInput> {
                           ),
                         ),
                         IconButton(
-                          onPressed: () {},
+                          onPressed: () {
+                            // Cloud actions can be added here
+                            HapticFeedback.lightImpact(); // Haptic feedback on cloud icon press
+                          },
                           icon: const Icon(
                             Icons.cloud_queue_outlined,
                             color: Colors.white,
@@ -203,6 +213,7 @@ class _ChatInputState extends State<ChatInput> {
                           isExpanded = true;
                           isIconsVisible = false;
                         });
+                        HapticFeedback.selectionClick(); // Haptic feedback on text field tap
                       },
                       child: Container(
                         decoration: BoxDecoration(
@@ -225,7 +236,7 @@ class _ChatInputState extends State<ChatInput> {
                                 ),
                                 enabled: !_isListening,
                                 onTap: () {
-                                  HapticFeedback.selectionClick();
+                                  HapticFeedback.selectionClick(); // Added haptic feedback for text field tap
                                   setState(() {
                                     isExpanded = true;
                                     isIconsVisible = false;
@@ -233,7 +244,7 @@ class _ChatInputState extends State<ChatInput> {
                                 },
                                 onSubmitted: (value) {
                                   if (!chatProvider.isThinking) {
-                                    HapticFeedback.lightImpact();
+                                    HapticFeedback.lightImpact(); // Haptic feedback when submitting message
                                     chatProvider.sendMessage();
                                   }
                                 },
@@ -244,8 +255,10 @@ class _ChatInputState extends State<ChatInput> {
                               onPressed: () {
                                 if (_isListening) {
                                   _stopListening();
+                                  HapticFeedback.lightImpact(); // Haptic feedback on stop listening
                                 } else {
                                   _startListening();
+                                  HapticFeedback.lightImpact(); // Haptic feedback on start listening
                                 }
                               },
                               icon: Icon(
@@ -274,8 +287,10 @@ class _ChatInputState extends State<ChatInput> {
                       onPressed: _isListening ? null : () { // Disable when listening
                         if (chatProvider.isStreaming) {
                           chatProvider.stopResponse();
+                          HapticFeedback.lightImpact(); // Haptic feedback on stop response
                         } else {
                           chatProvider.sendMessage();
+                          HapticFeedback.lightImpact(); // Haptic feedback on send message
                         }
                       },
                       icon: Icon(
