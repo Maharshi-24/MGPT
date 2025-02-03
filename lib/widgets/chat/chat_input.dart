@@ -2,6 +2,7 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:file_picker/file_picker.dart';
 import 'package:image/image.dart' as img; // Keep this import
 import 'package:provider/provider.dart';
 import 'package:speech_to_text/speech_to_text.dart' as stt;
@@ -22,7 +23,7 @@ class _ChatInputState extends State<ChatInput> {
   double _soundLevel = 0.0;
   File? _image;
   final ImagePicker _picker = ImagePicker();
-
+  File? _file; // For file picking
   double textFieldHeight = 50.0;
 
   // Speech-to-text
@@ -52,7 +53,6 @@ class _ChatInputState extends State<ChatInput> {
         });
       },
     );
-    // Using 'available' just to keep the unused field from warning.
   }
 
   void _startListening() async {
@@ -120,6 +120,40 @@ class _ChatInputState extends State<ChatInput> {
     }
   }
 
+  // Function to pick an image from gallery or camera
+  Future<void> _pickImage() async {
+    final XFile? image = await _picker.pickImage(source: ImageSource.gallery);
+    if (image != null) {
+      setState(() {
+        _image = File(image.path);
+      });
+    }
+  }
+
+  // Function to pick a file
+  Future<void> _pickFile() async {
+    FilePickerResult? result = await FilePicker.platform.pickFiles();
+    if (result != null) {
+      setState(() {
+        _file = File(result.files.single.path!);
+      });
+    }
+  }
+
+  // Function to remove the selected image
+  void _removeImage() {
+    setState(() {
+      _image = null;
+    });
+  }
+
+  // Function to remove the selected file
+  void _removeFile() {
+    setState(() {
+      _file = null;
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     final chatProvider = Provider.of<ChatProvider>(context);
@@ -170,7 +204,7 @@ class _ChatInputState extends State<ChatInput> {
                       children: [
                         IconButton(
                           onPressed: () {
-                            // Image picker or other actions can be added here
+                            _pickImage(); // Pick image when image icon is tapped
                             HapticFeedback.lightImpact(); // Haptic feedback on image icon press
                           },
                           icon: const Icon(
@@ -181,7 +215,7 @@ class _ChatInputState extends State<ChatInput> {
                         ),
                         IconButton(
                           onPressed: () {
-                            // Folder actions can be added here
+                            _pickFile(); // Pick file when folder icon is tapped
                             HapticFeedback.lightImpact(); // Haptic feedback on folder icon press
                           },
                           icon: const Icon(
@@ -301,6 +335,57 @@ class _ChatInputState extends State<ChatInput> {
                   ),
                 ],
               ),
+
+              if (_image != null) // Show image thumbnail with cross button
+                Stack(
+                  children: [
+                    Image.file(
+                      _image!,
+                      width: 100,
+                      height: 100,
+                      fit: BoxFit.cover,
+                    ),
+                    Positioned(
+                      top: 0,
+                      right: 0,
+                      child: IconButton(
+                        icon: const Icon(Icons.close, color: Colors.red),
+                        onPressed: _removeImage, // Remove image
+                      ),
+                    ),
+                  ],
+                ),
+
+              if (_file != null) // Show file name with cross button
+                Stack(
+                  children: [
+                    Container(
+                      padding: const EdgeInsets.all(8),
+                      color: Colors.grey[700],
+                      child: Row(
+                        children: [
+                          const Icon(Icons.insert_drive_file, color: Colors.white),
+                          const SizedBox(width: 8),
+                          Expanded(
+                            child: Text(
+                              _file!.path.split('/').last,
+                              style: TextStyle(color: Colors.white),
+                              overflow: TextOverflow.ellipsis,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                    Positioned(
+                      top: 0,
+                      right: 0,
+                      child: IconButton(
+                        icon: const Icon(Icons.close, color: Colors.red),
+                        onPressed: _removeFile, // Remove file
+                      ),
+                    ),
+                  ],
+                ),
 
               if (_isListening)
                 Center(
