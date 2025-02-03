@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart'; // Import for HapticFeedback
+import 'package:flutter/services.dart';
 
 class ScrollToBottomButton extends StatelessWidget {
   final VoidCallback onPressed;
@@ -8,43 +8,42 @@ class ScrollToBottomButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return GestureDetector(
-      onTap: () {
-        HapticFeedback.lightImpact(); // Light vibration
-        onPressed();
-      },
-      child: Container(
-        width: 50,
-        height: 50,
-        decoration: BoxDecoration(
-          color: Colors.grey[850],
-          shape: BoxShape.circle,
-          boxShadow: [
-            BoxShadow(
-              color: Colors.black.withOpacity(0.2),
-              blurRadius: 6,
-              offset: const Offset(0, 2),
+    return Material(
+      color: Colors.transparent,
+      child: InkWell(
+        onTap: () {
+          HapticFeedback.lightImpact(); // Light vibration
+          onPressed();
+        },
+        borderRadius: BorderRadius.circular(25), // Matches circular shape
+        child: ClipOval(
+          child: Container(
+            width: 50,
+            height: 50,
+            decoration: BoxDecoration(
+              color: Colors.grey[850],
+              shape: BoxShape.circle,
+              boxShadow: [
+                BoxShadow(
+                  color: Colors.black.withOpacity(0.2),
+                  blurRadius: 6,
+                  offset: const Offset(0, 2),
+                ),
+              ],
             ),
-          ],
-        ),
-        child: Center(
-          child: _buildImageIcon(),
+            child: Center(
+              child: Image.asset(
+                'assets/images/scroll-to-bottom.png',
+                width: 20,
+                height: 20,
+                color: Colors.white,
+                errorBuilder: (context, error, stackTrace) =>
+                const Icon(Icons.arrow_downward, color: Colors.white),
+              ),
+            ),
+          ),
         ),
       ),
     );
-  }
-
-  Widget _buildImageIcon() {
-    try {
-      return Image.asset(
-        'assets/images/scroll-to-bottom.png',
-        width: 20,
-        height: 20,
-        color: Colors.white,
-      );
-    } catch (e) {
-      print('Error loading image: $e');
-      return const Icon(Icons.error);
-    }
   }
 }
