@@ -7,6 +7,23 @@ class Changelog {
 
 final List<Changelog> changelogData = [
   Changelog(
+    version: "1.0.6",
+    highlights: [
+      "Added Notifications.",
+      "Added a manual push notification button.",
+      "Added ask permission for notifications.",
+      "Added more haptics.",
+      "Added scheduled notifications."
+    ],
+  ),
+  Changelog(
+    version: "1.0.55",
+    highlights: [
+      "Added new Font style.",
+      "Rendered end point for stop."
+    ],
+  ),
+  Changelog(
     version: "1.0.5",
     highlights: [
       "Updated the texts in the Login Page and Signup Page.",
