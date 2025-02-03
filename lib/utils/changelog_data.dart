@@ -7,6 +7,22 @@ class Changelog {
 
 final List<Changelog> changelogData = [
   Changelog(
+    version: "1.0.7",
+    highlights: [
+      "Added the audio recording feature.",
+      "Added a bubble which will indicate recording.",
+      "Gave permission for audio and battery saver."
+      "Added file picker."
+    ],
+  ),
+  Changelog(
+    version: "1.0.65",
+    highlights: [
+      "Replaced the button in the login with the slider.",
+      "Added image upload feature."
+    ],
+  ),
+  Changelog(
     version: "1.0.6",
     highlights: [
       "Added Notifications.",
