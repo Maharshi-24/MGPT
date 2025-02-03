@@ -79,69 +79,71 @@ class _ChatMessageListState extends State<ChatMessageList> {
 
   @override
   Widget build(BuildContext context) {
-    return Consumer<ChatProvider>(
-      builder: (context, chatProvider, child) {
-        // Auto-scroll to bottom when new messages are added or the bot is thinking
-        if (chatProvider.messages.length > _previousMessageCount || chatProvider.isThinking) {
-          WidgetsBinding.instance.addPostFrameCallback((_) {
-            _autoScrollToBottom();
-          });
-          _previousMessageCount = chatProvider.messages.length;
-        }
+    return Consumer<ChatProvider>(builder: (context, chatProvider, child) {
+      // Auto-scroll to bottom when new messages are added or the bot is thinking
+      if (chatProvider.messages.length > _previousMessageCount || chatProvider.isThinking) {
+        WidgetsBinding.instance.addPostFrameCallback((_) {
+          _autoScrollToBottom();
+        });
+        _previousMessageCount = chatProvider.messages.length;
+      }
 
-        return Stack(
-          children: [
-            if (chatProvider.messages.isEmpty)
-              const Center(
-                child: Padding(
-                  padding: EdgeInsets.all(16.0),
-                  child: Text(
-                    'What can I help with?',
-                    style: TextStyle(
-                      fontSize: 30,
-                      color: Colors.white,
-                    ),
+      // Check if there are no messages or the last message is "What can I help with?"
+      bool showScrollDownButton = chatProvider.messages.isNotEmpty &&
+          chatProvider.messages.last['text'] != 'What can I help with?';
+
+      return Stack(
+        children: [
+          if (chatProvider.messages.isEmpty)
+            const Center(
+              child: Padding(
+                padding: EdgeInsets.all(16.0),
+                child: Text(
+                  'What can I help with?',
+                  style: TextStyle(
+                    fontSize: 30,
+                    color: Colors.white,
                   ),
                 ),
-              )
-            else
-              ListView.builder(
-                controller: widget.scrollController, // Use the passed ScrollController
-                padding: const EdgeInsets.symmetric(vertical: 16),
-                itemCount: chatProvider.messages.length + (chatProvider.isThinking ? 1 : 0),
-                itemBuilder: (context, index) {
-                  if (index < chatProvider.messages.length) {
-                    final message = chatProvider.messages[index];
-                    final isFirstMessage = index == 0 || !chatProvider.messages[index - 1]['isUser'];
-                    return AnimatedMessage(
-                      key: ValueKey(message['text']),
-                      message: message['text'],
-                      isUser: message['isUser'],
-                      isFirstMessage: isFirstMessage,
-                      messageIndex: index, // Pass the message index
-                    );
-                  } else {
-                    return const ThinkingIndicator();
-                  }
-                },
               ),
-            Positioned(
-              bottom: 16,
-              left: 0,
-              right: 0,
-              child: Center(
-                child: AnimatedOpacity(
-                  opacity: _showScrollToBottomButton ? 1.0 : 0.0,
-                  duration: const Duration(milliseconds: 300),
-                  child: ScrollToBottomButton(
-                    onPressed: _scrollToBottom,
-                  ),
+            )
+          else
+            ListView.builder(
+              controller: widget.scrollController, // Use the passed ScrollController
+              padding: const EdgeInsets.symmetric(vertical: 16),
+              itemCount: chatProvider.messages.length + (chatProvider.isThinking ? 1 : 0),
+              itemBuilder: (context, index) {
+                if (index < chatProvider.messages.length) {
+                  final message = chatProvider.messages[index];
+                  final isFirstMessage = index == 0 || !chatProvider.messages[index - 1]['isUser'];
+                  return AnimatedMessage(
+                    key: ValueKey(message['text']),
+                    message: message['text'],
+                    isUser: message['isUser'],
+                    isFirstMessage: isFirstMessage,
+                    messageIndex: index, // Pass the message index
+                  );
+                } else {
+                  return const ThinkingIndicator();
+                }
+              },
+            ),
+          Positioned(
+            bottom: 16,
+            left: 0,
+            right: 0,
+            child: Center(
+              child: AnimatedOpacity(
+                opacity: showScrollDownButton && _showScrollToBottomButton ? 1.0 : 0.0,
+                duration: const Duration(milliseconds: 300),
+                child: ScrollToBottomButton(
+                  onPressed: _scrollToBottom,
                 ),
               ),
             ),
-          ],
-        );
-      },
-    );
+          ),
+        ],
+      );
+    });
   }
 }

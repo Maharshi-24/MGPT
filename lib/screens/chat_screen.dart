@@ -67,6 +67,10 @@ class _ChatScreenState extends State<ChatScreen> with WidgetsBindingObserver {
   Widget build(BuildContext context) {
     final chatProvider = Provider.of<ChatProvider>(context);
 
+    // Check if the last message is "What can I help with?" or if there are no messages
+    bool showScrollDownIcon = chatProvider.messages.isNotEmpty &&
+        chatProvider.messages.last['text'] != 'What can I help with?';
+
     return GestureDetector(
       onTap: () {
         chatProvider.focusNode.unfocus();
@@ -149,6 +153,7 @@ class _ChatScreenState extends State<ChatScreen> with WidgetsBindingObserver {
                 ],
               ),
             ),
+            // Conditionally show the background overlay if drawer is open
             if (_isDrawerOpen || _drawerOffset > 0)
               GestureDetector(
                 onTap: _toggleDrawer,
@@ -166,6 +171,20 @@ class _ChatScreenState extends State<ChatScreen> with WidgetsBindingObserver {
               ),
               child: const CustomDrawer(),
             ),
+            // Conditionally show scroll down icon
+            if (showScrollDownIcon)
+              Positioned(
+                bottom: 10,
+                right: 10,
+                child: GestureDetector(
+                  onTap: _scrollToBottom,
+                  child: Icon(
+                    Icons.arrow_downward,
+                    color: Colors.white,
+                    size: 30,
+                  ),
+                ),
+              ),
           ],
         ),
       ),
