@@ -1,4 +1,3 @@
-Here’s an updated and enhanced version of your page with the download link and some stylistic improvements:
 
 ---
 
