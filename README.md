@@ -80,6 +80,9 @@ flutter run
 |--------------------|----------|
 | ![Audio Search GIF](https://drive.google.com/uc?export=view&id=1uunds6vSmcMvWgVs6mxsv8QFGD5PPRv0) | ![Drawer GIF](https://drive.google.com/uc?export=view&id=1I8RfnEIK3GbYwEEkYeZmfpHWOgdI7djf) |
 
+| 🔔 Demo Notification | 🚀 Splash Screen |
+|--------------------|-----------------|
+| ![Notification GIF](https://drive.google.com/uc?export=view&id=1rpjq9fRuMbnuJCQRMNiLvKSAFWFgaecb) | ![Splash Screen GIF](https://drive.google.com/uc?export=view&id=17ylpKA4AaTYSe9VOrvGckqWKAYMddue4) |
 
 ---
 
