@@ -11,12 +11,6 @@ MGPT offers an exceptional AI chat experience with **voice input, file uploads, 
 
 ---
 
-## 📥 **Download MGPT**
-🔗 [**Download MGPT Now**](https://drive.google.com/file/d/1GSKyIgENNjveI2vg95RpQORd-EYy5HF2/view?usp=drive_link)  
-Get the app and experience the future of AI-powered conversations!
-
----
-
 ## 🎨 **Features & Highlights** ✨
 
 ✅ **ChatGPT-like UI** – Beautiful, user-friendly chat bubbles, animated thinking states, and a sleek drawer UI.  
