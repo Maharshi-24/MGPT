@@ -72,17 +72,13 @@ flutter run
 
 ## 📸 **Screenshots & Demo** 📷
 
-### 🔑 Login Page
-![Login GIF](https://drive.google.com/uc?export=view&id=1fwaDdAVR0Rxwye5qjNCRMxetPY7OS9JA)
+| 🔑 Login Page  | 🔍 Search from Text Field |
+|---------------|-------------------------|
+| ![Login GIF](https://drive.google.com/uc?export=view&id=1fwaDdAVR0Rxwye5qjNCRMxetPY7OS9JA) | ![Search GIF](https://drive.google.com/uc?export=view&id=1iUztz1kZ-va9KYVAziS1rDZIa9-LVmvH) |
 
-### 🔍 Search from Text Field
-![Search GIF](https://drive.google.com/uc?export=view&id=1iUztz1kZ-va9KYVAziS1rDZIa9-LVmvH)
-
-### 🎤 Search by Audio
-![Audio Search GIF](https://drive.google.com/uc?export=view&id=1uunds6vSmcMvWgVs6mxsv8QFGD5PPRv0)
-
-### 📂 Drawer
-![Drawer GIF](https://drive.google.com/uc?export=view&id=1I8RfnEIK3GbYwEEkYeZmfpHWOgdI7djf)
+| 🎤 Search by Audio | 📂 Drawer |
+|--------------------|----------|
+| ![Audio Search GIF](https://drive.google.com/uc?export=view&id=1uunds6vSmcMvWgVs6mxsv8QFGD5PPRv0) | ![Drawer GIF](https://drive.google.com/uc?export=view&id=1I8RfnEIK3GbYwEEkYeZmfpHWOgdI7djf) |
 
 
 ---
