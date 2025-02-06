@@ -79,10 +79,14 @@ flutter run
 
 ## 🛠️ Future Roadmap 📌
 
+✅ **Biometric & PIN Authentication**
+
 ✅ **Image & PDF Upload Feature**  
 ✅ **Better Theming & Customization**  
 ✅ **Docker & MongoDB Support**  
 ✅ **More AI Enhancements & Smart Replies**  
+✅ **Individual Chats**  
+✅ **Multiple Chats**  
 ✅ **Enhanced Voice Processing & Sentiment Analysis**  
 ✅ **Multi-language Support & Custom GPT Models**
 
@@ -92,7 +96,7 @@ flutter run
 
 💡 _Want to contribute?_ Fork the repo & submit a PR!  
 💬 _Have feedback or need support?_ Open an issue!  
-📧 _Contact:_ [maharshi@gmail.com/ https://www.linkedin.com/in/maharshi-desai-30143a279/]
+📧 _Contact:_ [maharshi2406@gmail.com / https://www.linkedin.com/in/maharshi-desai-30143a279/]
 
 ---
 
