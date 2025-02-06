@@ -1,7 +1,6 @@
 # 🚀 MGPT - Your Personal AI Chatbot
 
 ![MGPT Logo](https://drive.google.com/uc?export=view&id=13hycVF1QAafwbK5-h1yYls80wQK1EyAS)
-  
 **A near-exact ChatGPT clone built with Flutter & Express.**  
 MGPT brings a smooth AI chat experience with **voice input, file uploads, notifications, and a modern UI!**
 
@@ -81,6 +80,7 @@ flutter run
 ## 🛠️ Future Roadmap 📌
 
 ✅ **Biometric & PIN Authentication**
+
 ✅ **Image & PDF Upload Feature**  
 ✅ **Better Theming & Customization**  
 ✅ **Docker & MongoDB Support**  
@@ -93,6 +93,16 @@ flutter run
 ---
 
 ## 🤝 Contribution & Support 💡
+
+### 💬 Get in Touch
+📩 **Email:** [maharshi2406@gmail.com](mailto:maharshi2406@gmail.com)  
+🔗 **LinkedIn:** [Maharshi Desai](https://www.linkedin.com/in/maharshi-desai-30143a279/)  
+🐙 **GitHub:** [Maharshi2406](https://github.com/yourgithubusername)
+
+### 🤲 Support & Feedback
+💡 _Want to contribute?_ Fork the repo & submit a PR!  
+🚀 _Have feature suggestions?_ Open an issue!  
+💖 _Enjoying MGPT?_ Give it a ⭐ on GitHub!
 
 💡 _Want to contribute?_ Fork the repo & submit a PR!  
 💬 _Have feedback or need support?_ Open an issue!  
