@@ -12,23 +12,23 @@ MGPT offers an exceptional AI chat experience with **voice input, file uploads, 
 
 ## 🎨 **Features & Highlights** ✨
 
-✅ **ChatGPT-like UI** – Beautiful, user-friendly chat bubbles, animated thinking states, and a sleek drawer UI.  
-✅ **Voice Input** – Real-time recording animation with seamless speech-to-text.  
-✅ **File Uploads** – Images, PDFs (Coming soon) for an enhanced chat experience.  
-✅ **Biometric & PIN Authentication** – Secure login with fingerprint or PIN.  
-✅ **Push & Scheduled Notifications** – Stay up to date with timely alerts.  
-✅ **Modern Animations** – Smooth transitions and engaging UI animations for a delightful experience.  
-✅ **Smart Scroll-to-Bottom** – Auto-scrolls to the most recent messages, enhancing chat flow.  
-✅ **Customizable Themes** – Personalize the look and feel with beautiful theme options.
+🔹 **ChatGPT-like UI** – Beautiful, user-friendly chat bubbles, animated thinking states, and a sleek drawer UI.  
+🎤 **Voice Input** – Real-time recording animation with seamless speech-to-text.  
+📂 **File Uploads** – Images, PDFs (Coming soon) for an enhanced chat experience.  
+🔐 **Biometric & PIN Authentication** – Secure login with fingerprint or PIN.  
+📢 **Push & Scheduled Notifications** – Stay up to date with timely alerts.  
+💫 **Modern Animations** – Smooth transitions and engaging UI animations for a delightful experience.  
+⬇️ **Smart Scroll-to-Bottom** – Auto-scrolls to the most recent messages, enhancing chat flow.  
+🎨 **Customizable Themes** – Personalize the look and feel with beautiful theme options.
+
 
 ---
 
 ## ⚙️ **Tech Stack** 🛠️
 
-| **Frontend**  | **Backend**       | **Authentication** | **Deployment**  |
-|---------------|-------------------|--------------------|-----------------|
-| Flutter       | Express & Node.js | Firebase           | Render          |
-
+| 🎨 **Frontend**  | 🔙 **Backend**       | 🔑 **Authentication** | 🚀 **Deployment**  |
+|----------------|------------------|------------------|----------------|
+| Flutter       | Express & Node.js | Firebase        | Render         |
 ---
 
 ## 🚀 **Installation & Setup** 🏗️
@@ -84,29 +84,26 @@ flutter run
 
 ## 🛠️ **Future Roadmap** 📌
 
-✅ **Biometric & PIN Authentication**  
-✅ **Image & PDF Upload Feature**  
-✅ **Improved Theming & Customization**  
-✅ **Docker & MongoDB Support**  
-✅ **Enhanced AI Features & Smart Replies**  
-✅ **Individual & Multiple Chat Support**  
-✅ **Sentiment Analysis & Voice Processing**  
-✅ **Multi-language Support & Custom GPT Models**
+🔐 **Biometric & PIN Authentication** 🔜  
+📂 **Image & PDF Upload Feature** 🔜  
+🎨 **Improved Theming & Customization** 🔜  
+🐳 **Docker & MongoDB Support** 🔜  
+🤖 **Enhanced AI Features & Smart Replies** 🔜  
+💬 **Individual & Multiple Chat Support** 🔜  
+📊 **Sentiment Analysis & Voice Processing** 🔜  
+🌍 **Multi-language Support & Custom GPT Models** 🔜
 
 ---
 
-## 🤝 **Contribution & Support** 💡
+## 🤝 **Get in Touch** 💡
 
-### 💬 **Get in Touch**
 📩 **Email:** [maharshi2406@gmail.com](mailto:maharshi2406@gmail.com)  
-🔗 **LinkedIn:** [Maharshi Desai](https://www.linkedin.com/in/maharshi-desai-30143a279/)  
+🔗 **LinkedIn:** [Maharshi Desai](https://www.linkedin.com/in/maharshi-desai-30143a279/)
 
-### 🤲 **Support & Feedback**
-💡 _Want to contribute?_ Fork the repo & submit a PR!  
+💖 _Want to support MGPT?_ Give it a ⭐ on GitHub!  
 🚀 _Have feature suggestions?_ Open an issue!  
-💖 _Enjoying MGPT?_ Give it a ⭐ on GitHub!
+🤲 _Want to contribute?_ Fork the repo & submit a PR!
 
-📧 _Contact:_ **[Email](mailto:maharshi2406@gmail.com) | [LinkedIn](https://www.linkedin.com/in/maharshi-desai-30143a279/)**
 
 ---
 
