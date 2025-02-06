@@ -78,7 +78,17 @@ flutter run
 
 ## 📸 **Screenshots & Demo** 📷
 
-🚀 **Coming Soon!** Stay tuned for live previews and interactive demos of MGPT in action.
+### 🔑 Login Page
+![Login GIF](https://drive.google.com/file/d/1fwaDdAVR0Rxwye5qjNCRMxetPY7OS9JA/view?usp=drive_link)
+
+### 🔍 Search from Text Field
+![Search GIF](https://drive.google.com/file/d/1iUztz1kZ-va9KYVAziS1rDZIa9-LVmvH/view?usp=drive_link)
+
+### 🎤 Search by Audio
+![Audio Search GIF](https://drive.google.com/file/d/1uunds6vSmcMvWgVs6mxsv8QFGD5PPRv0/view?usp=drive_link)
+
+### 📂 Drawer
+![Drawer GIF](https://drive.google.com/file/d/1I8RfnEIK3GbYwEEkYeZmfpHWOgdI7djf/view?usp=drive_link)
 
 ---
 
