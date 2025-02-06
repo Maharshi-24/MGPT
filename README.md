@@ -43,12 +43,6 @@ MGPT offers an exceptional AI chat experience with **voice input, file uploads, 
 git clone https://github.com/yourusername/mgpt.git
 cd mgpt
 
-# Install dependencies for the Backend
-npm install
-
-# Start the backend
-npm start
-
 # Run the Flutter project
 flutter pub get
 flutter run
