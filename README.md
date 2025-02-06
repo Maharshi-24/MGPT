@@ -1,6 +1,7 @@
 # 🚀 MGPT - Your Personal AI Chatbot
 
-![MGPT Logo](https://drive.google.com/uc?id=13hycVF1QAafwbK5-h1yYls80wQK1EyAS)  
+![MGPT Logo](https://drive.google.com/uc?export=view&id=13hycVF1QAafwbK5-h1yYls80wQK1EyAS)
+  
 **A near-exact ChatGPT clone built with Flutter & Express.**  
 MGPT brings a smooth AI chat experience with **voice input, file uploads, notifications, and a modern UI!**
 
